@@ -8,7 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e1a;color:#e2e8f0}
+body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e1a;color:#e2e8f0;-webkit-overflow-scrolling:touch}
+body.dragging{overflow:hidden;touch-action:none}
 .hdr{text-align:center;padding:22px 16px 12px;background:linear-gradient(180deg,#111827,#0a0e1a);border-bottom:1px solid #1e293b}
 .hdr h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .hdr p{font-size:.75rem;color:#64748b;margin-top:2px}
@@ -42,7 +43,7 @@ body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e
 .wl:hover .rmb{opacity:1}
 .bnd{position:absolute;bottom:3px;font-size:.45rem;font-weight:700}
 .pt{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
-.pc{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:6px 10px;cursor:grab;user-select:none;transition:all .2s;text-align:center;width:105px}
+.pc{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:6px 10px;cursor:grab;user-select:none;transition:all .2s;text-align:center;width:105px;touch-action:none}
 .pc:hover{border-color:#22d3ee;transform:translateY(-2px);box-shadow:0 4px 12px rgba(34,211,238,.15)}
 .pc:active{cursor:grabbing}.pc.placed{opacity:.25;pointer-events:none}
 .pc .pcl{font-size:.66rem;font-weight:700;color:#e2e8f0;margin-bottom:2px}
@@ -56,7 +57,7 @@ body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e
 .ss{flex:1;display:flex;flex-wrap:wrap}
 .ldz{width:22px;height:22px;border-radius:50%;border:2px dashed #475569;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
 .ldz.act{border-color:#22d3ee;background:rgba(34,211,238,.1)}.ldz.on{background:#22c55e;border:none;box-shadow:0 0 10px rgba(34,197,94,.6)}
-.fs{display:inline-flex;align-items:center;gap:6px;background:#064e3b;border:1px solid #22c55e;border-radius:20px;padding:5px 12px;cursor:grab;user-select:none;font-size:.73rem;font-weight:600;color:#34d399;margin:6px auto;box-shadow:0 0 12px rgba(34,197,94,.3)}
+.fs{display:inline-flex;align-items:center;gap:6px;background:#064e3b;border:1px solid #22c55e;border-radius:20px;padding:5px 12px;cursor:grab;user-select:none;font-size:.73rem;font-weight:600;color:#34d399;margin:6px auto;box-shadow:0 0 12px rgba(34,197,94,.3);touch-action:none}
 .fs:active{cursor:grabbing}
 .fd{width:13px;height:13px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.8)}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s}
@@ -69,7 +70,7 @@ body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e
 .hlf{flex:1;min-width:280px;max-width:560px}.hlr{width:240px;flex-shrink:0}
 .hlr h4{font-size:.72rem;color:#64748b;text-align:center;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
 .ut{display:flex;flex-direction:column;gap:4px}
-.us{display:flex;align-items:center;gap:5px;background:#111827;border:1px solid #1e293b;border-radius:8px;padding:5px 8px;cursor:grab;user-select:none;transition:all .2s}
+.us{display:flex;align-items:center;gap:5px;background:#111827;border:1px solid #1e293b;border-radius:8px;padding:5px 8px;cursor:grab;user-select:none;transition:all .2s;touch-action:none}
 .us:hover{border-color:#22d3ee;transform:translateX(-2px)}.us:active{cursor:grabbing}.us.placed{opacity:.2;pointer-events:none}
 .fds{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 4px rgba(34,197,94,.5);flex-shrink:0}
 .usn{font-size:.58rem;font-weight:700;color:#64748b;width:16px}
@@ -92,7 +93,7 @@ body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <script type="text/babel">
-const { useState, useRef, useEffect } = React;
+const { useState, useRef, useEffect, useCallback } = React;
 
 const PROBES = [
   { id: "NC", label: "Neg. Control", seq: "\u2014  No Probe  \u2014", pathogen: "None" },
@@ -185,6 +186,7 @@ function App() {
   const [dragType, setDragType] = useState(null);
   const [dragId, setDragId] = useState(null);
   const ghostRef = useRef(null);
+  const isDraggingRef = useRef(false);
 
   const pat = patient ? PATIENTS[patient] : null;
   const placedProbes = new Set(wells.filter(Boolean));
@@ -206,12 +208,27 @@ function App() {
     setWashed(false); setWashing(false); setWashResults(null); setShowKey(false);
   };
 
+  // Lock/unlock scrolling
+  const lockScroll = useCallback(() => {
+    isDraggingRef.current = true;
+    document.body.classList.add("dragging");
+  }, []);
+
+  const unlockScroll = useCallback(() => {
+    isDraggingRef.current = false;
+    document.body.classList.remove("dragging");
+  }, []);
+
+  // Desktop drag
   const startDrag = (type, id, e) => {
     setDragType(type); setDragId(id);
     if (e.dataTransfer) { e.dataTransfer.setData("text/plain", type + ":" + id); e.dataTransfer.effectAllowed = "move"; }
   };
 
+  // Touch drag — prevents scrolling for the entire gesture
   const startTouch = (type, id, e) => {
+    e.preventDefault(); // prevent scroll from starting
+    lockScroll();
     const t = e.touches[0]; const el = e.currentTarget;
     const g = el.cloneNode(true);
     Object.assign(g.style, { position: "fixed", pointerEvents: "none", opacity: "0.8", zIndex: "9999", width: el.offsetWidth + "px", left: t.clientX - el.offsetWidth / 2 + "px", top: t.clientY - 25 + "px", transition: "none" });
@@ -220,10 +237,21 @@ function App() {
     setDragType(type); setDragId(id);
   };
 
+  // Global touch move/end — blocks scroll while dragging
   useEffect(() => {
-    const mv = (e) => { if (ghostRef.current) { const t = e.touches[0]; ghostRef.current.style.left = t.clientX - ghostRef.current.offsetWidth / 2 + "px"; ghostRef.current.style.top = t.clientY - 25 + "px"; } };
+    const mv = (e) => {
+      if (!isDraggingRef.current) return;
+      e.preventDefault(); // block scroll during drag
+      if (ghostRef.current) {
+        const t = e.touches[0];
+        ghostRef.current.style.left = t.clientX - ghostRef.current.offsetWidth / 2 + "px";
+        ghostRef.current.style.top = t.clientY - 25 + "px";
+      }
+    };
     const en = (e) => {
+      if (!isDraggingRef.current) return;
       if (ghostRef.current) { document.body.removeChild(ghostRef.current); ghostRef.current = null; }
+      unlockScroll();
       if (!dragType || !dragId) return;
       const t = e.changedTouches[0]; const els = document.elementsFromPoint(t.clientX, t.clientY);
       if (dragType === "probe") {
