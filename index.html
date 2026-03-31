@@ -1,7 +1,101 @@
-import { useState, useRef, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nucleic Acid Identification Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e1a;color:#e2e8f0}
+.hdr{text-align:center;padding:22px 16px 12px;background:linear-gradient(180deg,#111827,#0a0e1a);border-bottom:1px solid #1e293b}
+.hdr h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr p{font-size:.75rem;color:#64748b;margin-top:2px}
+.sbar{display:flex;justify-content:center;gap:4px;padding:10px 8px;background:#0d1224;flex-wrap:wrap}
+.sp{padding:4px 10px;border-radius:20px;font-size:.65rem;font-weight:600;border:1px solid #1e293b;color:#475569;transition:all .3s;white-space:nowrap}
+.sp.on{background:#164e63;border-color:#22d3ee;color:#22d3ee}
+.sp.dn{background:#064e3b;border-color:#34d399;color:#34d399}
+.bd{max-width:920px;margin:0 auto;padding:14px}
+.info{background:#111827;border:1px solid #1e293b;border-radius:12px;padding:11px 14px;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start}
+.info .ic{font-size:1.1rem;flex-shrink:0}.info .tx{font-size:.8rem;color:#94a3b8;line-height:1.45}.info b{color:#e2e8f0}
+.bpr{display:flex;justify-content:center;gap:12px;margin:8px 0 12px;flex-wrap:wrap}
+.bpc{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:5px}
+.b{padding:2px 6px;border-radius:4px}
+.bA{background:#1e3a5f;color:#60a5fa}.bT{background:#3b1f1f;color:#f87171}.bG{background:#1a3320;color:#4ade80}.bC{background:#3b2f1a;color:#fbbf24}
+.pw{display:flex;flex-direction:column;align-items:center}
+.pl{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:linear-gradient(145deg,#1a1a2e,#16213e);border:2px solid #1e293b;border-radius:16px;padding:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);width:100%;max-width:560px;position:relative}
+.wl{border-radius:50%;background:#0f172a;border:2px dashed #334155;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all .3s;min-height:95px;aspect-ratio:1;overflow:visible;cursor:default}
+.wl.dt{border-color:#22d3ee;background:#0c2d3e;box-shadow:0 0 16px rgba(34,211,238,.2)}
+.wl.fl{border-style:solid;border-color:#334155;background:#111827}
+.wl.glow{border-color:#22c55e!important;background:radial-gradient(circle,#064e3b,#0f172a)!important;box-shadow:0 0 24px rgba(34,197,94,.5),0 0 48px rgba(34,197,94,.2)!important;animation:gp 2s ease-in-out infinite}
+.wl.dim{border-color:#1e293b;opacity:.35}
+.wl.wrong{animation:wo .6s ease-out forwards}
+@keyframes gp{0%,100%{box-shadow:0 0 24px rgba(34,197,94,.5),0 0 48px rgba(34,197,94,.2)}50%{box-shadow:0 0 36px rgba(34,197,94,.7),0 0 64px rgba(34,197,94,.3)}}
+@keyframes wo{0%{border-color:#f87171;opacity:1}100%{border-color:#1e293b;opacity:.4}}
+.wlbl{font-size:.5rem;font-weight:700;text-transform:uppercase;color:#64748b}
+.wid{font-size:.62rem;font-weight:700;color:#cbd5e1;margin-bottom:1px}
+.wseq{text-align:center;padding:0 4px;word-break:break-all;line-height:1.3;margin-top:1px;display:flex;flex-wrap:wrap;justify-content:center}
+.wsm{text-align:center;word-break:break-all;margin-top:2px;display:flex;flex-wrap:wrap;justify-content:center}
+.fdw{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.6);position:absolute;top:5px;right:8px}
+.rmb{position:absolute;top:2px;right:5px;background:#7f1d1d;color:#fca5a5;border:none;border-radius:50%;width:15px;height:15px;font-size:.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.wl:hover .rmb{opacity:1}
+.bnd{position:absolute;bottom:3px;font-size:.45rem;font-weight:700}
+.pt{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+.pc{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:6px 10px;cursor:grab;user-select:none;transition:all .2s;text-align:center;width:105px}
+.pc:hover{border-color:#22d3ee;transform:translateY(-2px);box-shadow:0 4px 12px rgba(34,211,238,.15)}
+.pc:active{cursor:grabbing}.pc.placed{opacity:.25;pointer-events:none}
+.pc .pcl{font-size:.66rem;font-weight:700;color:#e2e8f0;margin-bottom:2px}
+.pr{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.pb{padding:9px 18px;border-radius:10px;border:2px solid #334155;background:#111827;font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .2s;color:#e2e8f0}
+.pb:hover{transform:translateY(-2px)}.pb.sel{transform:scale(1.05)}
+.st{display:flex;flex-direction:column;gap:5px;align-items:center;margin:10px 0}
+.sc{display:flex;align-items:center;gap:7px;background:#111827;border:1px solid #1e293b;border-radius:10px;padding:6px 10px;width:100%;max-width:330px;transition:all .3s;cursor:pointer}
+.sc.lab{border-color:#22d3ee}
+.sn{font-size:.66rem;font-weight:700;color:#64748b;width:22px;flex-shrink:0}
+.ss{flex:1;display:flex;flex-wrap:wrap}
+.ldz{width:22px;height:22px;border-radius:50%;border:2px dashed #475569;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.ldz.act{border-color:#22d3ee;background:rgba(34,211,238,.1)}.ldz.on{background:#22c55e;border:none;box-shadow:0 0 10px rgba(34,197,94,.6)}
+.fs{display:inline-flex;align-items:center;gap:6px;background:#064e3b;border:1px solid #22c55e;border-radius:20px;padding:5px 12px;cursor:grab;user-select:none;font-size:.73rem;font-weight:600;color:#34d399;margin:6px auto;box-shadow:0 0 12px rgba(34,197,94,.3)}
+.fs:active{cursor:grabbing}
+.fd{width:13px;height:13px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.8)}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bp{background:#0e7490;color:#fff}.bp:hover:not(:disabled){background:#0891b2}
+.bg{background:#15803d;color:#fff}.bg:hover:not(:disabled){background:#16a34a}
+.bo{background:transparent;color:#94a3b8;border:1px solid #334155}.bo:hover:not(:disabled){border-color:#64748b;color:#e2e8f0}
+.br{display:flex;justify-content:center;gap:7px;margin-top:14px;flex-wrap:wrap}
+.hl{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+.hlf{flex:1;min-width:280px;max-width:560px}.hlr{width:240px;flex-shrink:0}
+.hlr h4{font-size:.72rem;color:#64748b;text-align:center;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.ut{display:flex;flex-direction:column;gap:4px}
+.us{display:flex;align-items:center;gap:5px;background:#111827;border:1px solid #1e293b;border-radius:8px;padding:5px 8px;cursor:grab;user-select:none;transition:all .2s}
+.us:hover{border-color:#22d3ee;transform:translateX(-2px)}.us:active{cursor:grabbing}.us.placed{opacity:.2;pointer-events:none}
+.fds{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 4px rgba(34,197,94,.5);flex-shrink:0}
+.usn{font-size:.58rem;font-weight:700;color:#64748b;width:16px}
+.kt{width:100%;max-width:460px;margin:12px auto;border-collapse:collapse}
+.kt th{background:#164e63;color:#22d3ee;padding:6px 10px;font-size:.73rem;text-align:left;font-weight:700}
+.kt td{padding:6px 10px;border-bottom:1px solid #1e293b;font-size:.76rem;color:#cbd5e1}.kt tr:nth-child(even) td{background:#0f172a}
+.dbox{background:linear-gradient(135deg,#064e3b,#0a1f14);border:2px solid #22c55e;border-radius:14px;padding:16px;text-align:center;margin:16px auto;max-width:460px}
+.dbox h3{color:#34d399;font-size:1rem;margin-bottom:6px}.dbox ul{list-style:none}.dbox li{font-size:.85rem;color:#e2e8f0;padding:2px 0;display:flex;align-items:center;justify-content:center;gap:5px}
+.mbox{background:#1c1917;border:1px solid #92400e;border-radius:10px;padding:8px 12px;margin:8px auto;max-width:460px;text-align:center;font-size:.78rem;color:#fbbf24}
+.rl{color:#64748b;font-size:.74rem;cursor:pointer;text-decoration:underline;margin-top:8px;background:none;border:none;font-family:inherit}.rl:hover{color:#94a3b8}
+.fade{animation:fi .4s ease-out}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.washov{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(56,189,248,.12),transparent);animation:ws 1.8s ease-out forwards;pointer-events:none;border-radius:16px;z-index:2}
+@keyframes ws{0%{opacity:0;transform:translateY(-100%)}30%{opacity:1}100%{opacity:0;transform:translateY(100%)}}
+@media(max-width:640px){.pl{gap:5px;padding:8px}.wl{min-height:76px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useRef, useEffect } = React;
 
 const PROBES = [
-  { id: "NC", label: "Neg. Control", seq: "—  No Probe  —", pathogen: "None" },
+  { id: "NC", label: "Neg. Control", seq: "\u2014  No Probe  \u2014", pathogen: "None" },
   { id: "P1", label: "Probe 1", seq: "ATGCGATCCTAG", pathogen: "Human DNA (Positive Control)" },
   { id: "P2", label: "Probe 2", seq: "GCTTAACCGGAT", pathogen: "Hepatitis B Virus" },
   { id: "P3", label: "Probe 3", seq: "CCAAGGTTTCCA", pathogen: "West Nile Virus" },
@@ -65,10 +159,19 @@ const PATIENTS = {
 };
 
 const STEPS = ["Place Probes", "Select Patient", "Label DNA", "Base-Pair to Platform", "Wash & Results"];
-
 const getProbe = (id) => PROBES.find(p => p.id === id);
 
-export default function App() {
+const Seq = ({ seq, size }) => {
+  const sz = size || "0.5rem";
+  const colors = { A: "#60a5fa", T: "#f87171", G: "#4ade80", C: "#fbbf24" };
+  return (
+    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: sz, letterSpacing: "0.03em", lineHeight: 1.3, wordBreak: "break-all", textAlign: "center" }}>
+      {seq.split("").map((ch, i) => <span key={i} style={{ color: colors[ch] || "#64748b" }}>{ch}</span>)}
+    </span>
+  );
+};
+
+function App() {
   const [step, setStep] = useState(0);
   const [wells, setWells] = useState(Array(8).fill(null));
   const [patient, setPatient] = useState(null);
@@ -79,9 +182,7 @@ export default function App() {
   const [washing, setWashing] = useState(false);
   const [washResults, setWashResults] = useState(null);
   const [showKey, setShowKey] = useState(false);
-
-  // Active drag tracking
-  const [dragType, setDragType] = useState(null); // 'probe','fluor','strand'
+  const [dragType, setDragType] = useState(null);
   const [dragId, setDragId] = useState(null);
   const ghostRef = useRef(null);
 
@@ -105,10 +206,9 @@ export default function App() {
     setWashed(false); setWashing(false); setWashResults(null); setShowKey(false);
   };
 
-  // --- UNIVERSAL DRAG ---
-  const startDrag = (type, id, e, el) => {
+  const startDrag = (type, id, e) => {
     setDragType(type); setDragId(id);
-    if (e.dataTransfer) { e.dataTransfer.setData("text/plain", `${type}:${id}`); e.dataTransfer.effectAllowed = "move"; }
+    if (e.dataTransfer) { e.dataTransfer.setData("text/plain", type + ":" + id); e.dataTransfer.effectAllowed = "move"; }
   };
 
   const startTouch = (type, id, e) => {
@@ -126,7 +226,6 @@ export default function App() {
       if (ghostRef.current) { document.body.removeChild(ghostRef.current); ghostRef.current = null; }
       if (!dragType || !dragId) return;
       const t = e.changedTouches[0]; const els = document.elementsFromPoint(t.clientX, t.clientY);
-
       if (dragType === "probe") {
         const wellEl = els.find(el => el.dataset.wellIdx !== undefined);
         if (wellEl) { const i = parseInt(wellEl.dataset.wellIdx); if (wells[i] === null) setWells(p => { const n = [...p]; n[i] = dragId; return n; }); }
@@ -137,7 +236,7 @@ export default function App() {
         const wEl = els.find(el => el.dataset.wellDrop !== undefined);
         if (wEl) {
           const idx = parseInt(wEl.dataset.wellDrop);
-          setWellStrands(prev => { const n = { ...prev }; Object.keys(n).forEach(k => { if (n[k] === dragId) delete n[k]; }); n[idx] = dragId; return n; });
+          setWellStrands(prev => { const n = Object.assign({}, prev); Object.keys(n).forEach(k => { if (n[k] === dragId) delete n[k]; }); n[idx] = dragId; return n; });
         }
       }
       setDragType(null); setDragId(null);
@@ -150,12 +249,11 @@ export default function App() {
   const onGenericDrop = (e, type, handler) => {
     e.preventDefault();
     const data = e.dataTransfer.getData("text/plain");
-    const [dtype, did] = data.split(":");
-    if (dtype === type) handler(did);
+    const parts = data.split(":");
+    if (parts[0] === type) handler(parts.slice(1).join(":"));
     setDragType(null); setDragId(null);
   };
 
-  // WASH
   const doWash = () => {
     setWashing(true);
     setTimeout(() => {
@@ -184,263 +282,172 @@ export default function App() {
   const wrongCount = washResults ? Object.values(washResults).filter(r => r === "wrong").length : 0;
   const missed = getMissed();
 
-  // Color a nucleotide
-  const Seq = ({ seq, size = "0.5rem", mono = true }) => (
-    <span style={{ fontFamily: mono ? "'JetBrains Mono',monospace" : "inherit", fontSize: size, letterSpacing: "0.03em", lineHeight: 1.3, wordBreak: "break-all", textAlign: "center" }}>
-      {seq.split("").map((ch, i) => {
-        const colors = { A: "#60a5fa", T: "#f87171", G: "#4ade80", C: "#fbbf24" };
-        return <span key={i} style={{ color: colors[ch] || "#64748b" }}>{ch}</span>;
-      })}
-    </span>
-  );
-
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
-        *{box-sizing:border-box;margin:0;padding:0}
-        .sim{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e1a;color:#e2e8f0}
-        .hdr{text-align:center;padding:22px 16px 12px;background:linear-gradient(180deg,#111827,#0a0e1a);border-bottom:1px solid #1e293b}
-        .hdr h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .hdr p{font-size:.75rem;color:#64748b;margin-top:2px}
-        .sbar{display:flex;justify-content:center;gap:4px;padding:10px 8px;background:#0d1224;flex-wrap:wrap}
-        .sp{padding:4px 10px;border-radius:20px;font-size:.65rem;font-weight:600;border:1px solid #1e293b;color:#475569;transition:all .3s;white-space:nowrap}
-        .sp.on{background:#164e63;border-color:#22d3ee;color:#22d3ee}
-        .sp.dn{background:#064e3b;border-color:#34d399;color:#34d399}
-        .bd{max-width:920px;margin:0 auto;padding:14px}
-        .info{background:#111827;border:1px solid #1e293b;border-radius:12px;padding:11px 14px;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start}
-        .info .ic{font-size:1.1rem;flex-shrink:0}.info .tx{font-size:.8rem;color:#94a3b8;line-height:1.45}.info b{color:#e2e8f0}
-        .bpr{display:flex;justify-content:center;gap:12px;margin:8px 0 12px;flex-wrap:wrap}
-        .bpc{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:5px}
-        .b{padding:2px 6px;border-radius:4px}
-        .bA{background:#1e3a5f;color:#60a5fa}.bT{background:#3b1f1f;color:#f87171}.bG{background:#1a3320;color:#4ade80}.bC{background:#3b2f1a;color:#fbbf24}
-        .pw{display:flex;flex-direction:column;align-items:center}
-        .pl{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:linear-gradient(145deg,#1a1a2e,#16213e);border:2px solid #1e293b;border-radius:16px;padding:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);width:100%;max-width:560px;position:relative}
-        .wl{border-radius:50%;background:#0f172a;border:2px dashed #334155;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all .3s;min-height:95px;aspect-ratio:1;overflow:visible;cursor:default}
-        .wl.dt{border-color:#22d3ee;background:#0c2d3e;box-shadow:0 0 16px rgba(34,211,238,.2)}
-        .wl.fl{border-style:solid;border-color:#334155;background:#111827}
-        .wl.glow{border-color:#22c55e!important;background:radial-gradient(circle,#064e3b,#0f172a)!important;box-shadow:0 0 24px rgba(34,197,94,.5),0 0 48px rgba(34,197,94,.2)!important;animation:gp 2s ease-in-out infinite}
-        .wl.dim{border-color:#1e293b;opacity:.35}
-        .wl.wrong{animation:wo .6s ease-out forwards}
-        @keyframes gp{0%,100%{box-shadow:0 0 24px rgba(34,197,94,.5),0 0 48px rgba(34,197,94,.2)}50%{box-shadow:0 0 36px rgba(34,197,94,.7),0 0 64px rgba(34,197,94,.3)}}
-        @keyframes wo{0%{border-color:#f87171;opacity:1}100%{border-color:#1e293b;opacity:.4}}
-        .wlbl{font-size:.5rem;font-weight:700;text-transform:uppercase;color:#64748b}
-        .wid{font-size:.62rem;font-weight:700;color:#cbd5e1;margin-bottom:1px}
-        .wseq{text-align:center;padding:0 4px;word-break:break-all;line-height:1.3;margin-top:1px;display:flex;flex-wrap:wrap;justify-content:center}
-        .wsm{text-align:center;word-break:break-all;margin-top:2px;display:flex;flex-wrap:wrap;justify-content:center}
-        .fdw{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.6);position:absolute;top:5px;right:8px}
-        .rmb{position:absolute;top:2px;right:5px;background:#7f1d1d;color:#fca5a5;border:none;border-radius:50%;width:15px;height:15px;font-size:.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
-        .wl:hover .rmb{opacity:1}
-        .bnd{position:absolute;bottom:3px;font-size:.45rem;font-weight:700}
-        .pt{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
-        .pc{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:6px 10px;cursor:grab;user-select:none;transition:all .2s;text-align:center;width:105px}
-        .pc:hover{border-color:#22d3ee;transform:translateY(-2px);box-shadow:0 4px 12px rgba(34,211,238,.15)}
-        .pc:active{cursor:grabbing}.pc.placed{opacity:.25;pointer-events:none}
-        .pc .pcl{font-size:.66rem;font-weight:700;color:#e2e8f0;margin-bottom:2px}
-        .pr{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
-        .pb{padding:9px 18px;border-radius:10px;border:2px solid #334155;background:#111827;font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .2s;color:#e2e8f0}
-        .pb:hover{transform:translateY(-2px)}.pb.sel{transform:scale(1.05)}
-        .st{display:flex;flex-direction:column;gap:5px;align-items:center;margin:10px 0}
-        .sc{display:flex;align-items:center;gap:7px;background:#111827;border:1px solid #1e293b;border-radius:10px;padding:6px 10px;width:100%;max-width:330px;transition:all .3s;cursor:pointer}
-        .sc.lab{border-color:#22d3ee}
-        .sn{font-size:.66rem;font-weight:700;color:#64748b;width:22px;flex-shrink:0}
-        .ss{flex:1;display:flex;flex-wrap:wrap}
-        .ldz{width:22px;height:22px;border-radius:50%;border:2px dashed #475569;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-        .ldz.act{border-color:#22d3ee;background:rgba(34,211,238,.1)}.ldz.on{background:#22c55e;border:none;box-shadow:0 0 10px rgba(34,197,94,.6)}
-        .fs{display:inline-flex;align-items:center;gap:6px;background:#064e3b;border:1px solid #22c55e;border-radius:20px;padding:5px 12px;cursor:grab;user-select:none;font-size:.73rem;font-weight:600;color:#34d399;margin:6px auto;box-shadow:0 0 12px rgba(34,197,94,.3)}
-        .fs:active{cursor:grabbing}
-        .fd{width:13px;height:13px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.8)}
-        .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s}
-        .btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
-        .bp{background:#0e7490;color:#fff}.bp:hover:not(:disabled){background:#0891b2}
-        .bg{background:#15803d;color:#fff}.bg:hover:not(:disabled){background:#16a34a}
-        .bo{background:transparent;color:#94a3b8;border:1px solid #334155}.bo:hover:not(:disabled){border-color:#64748b;color:#e2e8f0}
-        .br{display:flex;justify-content:center;gap:7px;margin-top:14px;flex-wrap:wrap}
-        .hl{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
-        .hlf{flex:1;min-width:280px;max-width:560px}.hlr{width:240px;flex-shrink:0}
-        .hlr h4{font-size:.72rem;color:#64748b;text-align:center;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
-        .ut{display:flex;flex-direction:column;gap:4px}
-        .us{display:flex;align-items:center;gap:5px;background:#111827;border:1px solid #1e293b;border-radius:8px;padding:5px 8px;cursor:grab;user-select:none;transition:all .2s}
-        .us:hover{border-color:#22d3ee;transform:translateX(-2px)}.us:active{cursor:grabbing}.us.placed{opacity:.2;pointer-events:none}
-        .fds{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 4px rgba(34,197,94,.5);flex-shrink:0}
-        .usn{font-size:.58rem;font-weight:700;color:#64748b;width:16px}
-        .rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:12px 0}
-        .rc{background:#111827;border:1px solid #1e293b;border-radius:10px;padding:9px;text-align:center}
-        .rc.pos{border-color:#22c55e;background:#0a1f14}.rc.neg{opacity:.4}
-        .rcp{font-size:.68rem;color:#64748b;margin-bottom:2px;font-weight:600}.rcs{font-size:.85rem;font-weight:700;margin-bottom:2px}.rcpa{font-size:.68rem;color:#94a3b8}
-        .kt{width:100%;max-width:460px;margin:12px auto;border-collapse:collapse}
-        .kt th{background:#164e63;color:#22d3ee;padding:6px 10px;font-size:.73rem;text-align:left;font-weight:700}
-        .kt td{padding:6px 10px;border-bottom:1px solid #1e293b;font-size:.76rem;color:#cbd5e1}.kt tr:nth-child(even) td{background:#0f172a}
-        .dbox{background:linear-gradient(135deg,#064e3b,#0a1f14);border:2px solid #22c55e;border-radius:14px;padding:16px;text-align:center;margin:16px auto;max-width:460px}
-        .dbox h3{color:#34d399;font-size:1rem;margin-bottom:6px}.dbox ul{list-style:none}.dbox li{font-size:.85rem;color:#e2e8f0;padding:2px 0;display:flex;align-items:center;justify-content:center;gap:5px}
-        .mbox{background:#1c1917;border:1px solid #92400e;border-radius:10px;padding:8px 12px;margin:8px auto;max-width:460px;text-align:center;font-size:.78rem;color:#fbbf24}
-        .rl{color:#64748b;font-size:.74rem;cursor:pointer;text-decoration:underline;margin-top:8px;background:none;border:none;font-family:inherit}.rl:hover{color:#94a3b8}
-        .fade{animation:fi .4s ease-out}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
-        .washov{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(56,189,248,.12),transparent);animation:ws 1.8s ease-out forwards;pointer-events:none;border-radius:16px;z-index:2}
-        @keyframes ws{0%{opacity:0;transform:translateY(-100%)}30%{opacity:1}100%{opacity:0;transform:translateY(100%)}}
-        @media(max-width:640px){.pl{gap:5px;padding:8px}.wl{min-height:76px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}}
-      `}</style>
-      <div className="sim">
-        <div className="hdr">
-          <h1>🧬 Nucleic Acid Identification Test</h1>
-          <p>Base-pair patient DNA to identify pathogens</p>
-        </div>
-        <div className="sbar">{STEPS.map((s, i) => <div key={i} className={`sp ${i === step ? "on" : i < step ? "dn" : ""}`}>{i < step ? "✓ " : ""}{s}</div>)}</div>
-        <div className="bd">
+    <div>
+      <div className="hdr">
+        <h1>{"\uD83E\uDDEC"} Nucleic Acid Identification Test</h1>
+        <p>Base-pair patient DNA to identify pathogens</p>
+      </div>
+      <div className="sbar">{STEPS.map((s, i) => <div key={i} className={"sp" + (i === step ? " on" : i < step ? " dn" : "")}>{i < step ? "\u2713 " : ""}{s}</div>)}</div>
+      <div className="bd">
 
-          {/* STEP 0 */}
-          {step === 0 && <div className="fade">
-            <div className="info"><span className="ic">🔬</span><div className="tx"><b>Step 1: Place Probes on the Platform</b><br/>Drag each probe card onto an empty well. Click a filled well to remove it.</div></div>
-            <div className="pw">
-              <div className="pl">
-                {wells.map((pid, idx) => {
-                  const pr = pid ? getProbe(pid) : null;
-                  return <div key={idx} data-well-idx={idx} className={`wl ${pr ? "fl" : ""} ${dragType === "probe" && !pr ? "dt" : ""}`}
-                    onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "probe", id => { if (wells[idx] === null) setWells(p => { const n = [...p]; n[idx] = id; return n; }); })}
-                    onClick={() => { if (step === 0 && pr) setWells(p => { const n = [...p]; n[idx] = null; return n; }); }}>
-                    {pr ? <><span className="wid">{pr.label}</span><div className="wseq"><Seq seq={pr.seq} size=".46rem"/></div></> : <span className="wlbl">Well {idx + 1}</span>}
-                  </div>;
-                })}
-              </div>
-              <div className="pt">
-                {PROBES.map(p => <div key={p.id} className={`pc ${placedProbes.has(p.id) ? "placed" : ""}`}
-                  draggable={!placedProbes.has(p.id)} onDragStart={e => startDrag("probe", p.id, e)}
-                  onTouchStart={!placedProbes.has(p.id) ? e => startTouch("probe", p.id, e) : undefined}>
-                  <div className="pcl">{p.label}</div><div className="wseq"><Seq seq={p.seq} size=".44rem"/></div>
-                </div>)}
-              </div>
+        {/* STEP 0: PLACE PROBES */}
+        {step === 0 && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83D\uDD2C"}</span><div className="tx"><b>Step 1: Place Probes on the Platform</b><br/>Drag each probe card onto an empty well. Click a filled well to remove it.</div></div>
+          <div className="pw">
+            <div className="pl">
+              {wells.map((pid, idx) => {
+                const pr = pid ? getProbe(pid) : null;
+                return <div key={idx} data-well-idx={idx} className={"wl" + (pr ? " fl" : "") + (dragType === "probe" && !pr ? " dt" : "")}
+                  onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "probe", id => { if (wells[idx] === null) setWells(p => { const n = [...p]; n[idx] = id; return n; }); })}
+                  onClick={() => { if (step === 0 && pr) setWells(p => { const n = [...p]; n[idx] = null; return n; }); }}>
+                  {pr ? <><span className="wid">{pr.label}</span><div className="wseq"><Seq seq={pr.seq} size=".46rem"/></div></> : <span className="wlbl">Well {idx + 1}</span>}
+                </div>;
+              })}
             </div>
-            <div className="br"><button className="btn bp" disabled={!allProbesPlaced} onClick={() => setStep(1)}>{allProbesPlaced ? "Continue →" : `Place ${8 - wells.filter(Boolean).length} more`}</button></div>
-          </div>}
+            <div className="pt">
+              {PROBES.map(p => <div key={p.id} className={"pc" + (placedProbes.has(p.id) ? " placed" : "")}
+                draggable={!placedProbes.has(p.id)} onDragStart={e => startDrag("probe", p.id, e)}
+                onTouchStart={!placedProbes.has(p.id) ? e => startTouch("probe", p.id, e) : undefined}>
+                <div className="pcl">{p.label}</div><div className="wseq"><Seq seq={p.seq} size=".44rem"/></div>
+              </div>)}
+            </div>
+          </div>
+          <div className="br"><button className="btn bp" disabled={!allProbesPlaced} onClick={() => setStep(1)}>{allProbesPlaced ? "Continue \u2192" : "Place " + (8 - wells.filter(Boolean).length) + " more"}</button></div>
+        </div>}
 
-          {/* STEP 1 */}
-          {step === 1 && <div className="fade">
-            <div className="info"><span className="ic">🩸</span><div className="tx"><b>Step 2: Select a Patient Sample</b><br/>Choose a blood sample. You'll identify pathogens by base-pairing the patient's DNA against your probes.</div></div>
-            <div className="pr">{Object.entries(PATIENTS).map(([n, d]) =>
-              <button key={n} className={`pb ${patient === n ? "sel" : ""}`}
-                style={{ borderColor: patient === n ? d.color : undefined, color: d.color, boxShadow: patient === n ? `0 0 16px ${d.color}33` : undefined }}
-                onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); }}>
-                🧪 {n}
-              </button>)}
-            </div>
-            <div className="br"><button className="btn bo" onClick={() => setStep(0)}>← Back</button><button className="btn bp" disabled={!patient} onClick={() => setStep(2)}>Continue →</button></div>
-          </div>}
+        {/* STEP 1: SELECT PATIENT */}
+        {step === 1 && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 2: Select a Patient Sample</b><br/>Choose a blood sample. You'll identify pathogens by base-pairing the patient's DNA against your probes.</div></div>
+          <div className="pr">{Object.entries(PATIENTS).map(([n, d]) =>
+            <button key={n} className={"pb" + (patient === n ? " sel" : "")}
+              style={{ borderColor: patient === n ? d.color : undefined, color: d.color, boxShadow: patient === n ? "0 0 16px " + d.color + "33" : undefined }}
+              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); }}>
+              {"\uD83E\uDDEA"} {n}
+            </button>)}
+          </div>
+          <div className="br"><button className="btn bo" onClick={() => setStep(0)}>{"\u2190"} Back</button><button className="btn bp" disabled={!patient} onClick={() => setStep(2)}>Continue {"\u2192"}</button></div>
+        </div>}
 
-          {/* STEP 2 */}
-          {step === 2 && pat && <div className="fade">
-            <div className="info"><span className="ic">💡</span><div className="tx"><b>Step 3: Attach Fluorescent Labels</b><br/>Click each strand (or drag the marker) to label it. Labels let you detect binding.</div></div>
-            <div style={{ textAlign: "center" }}>
-              <div className="fs" draggable onDragStart={e => startDrag("fluor", "f", e)} onTouchStart={e => startTouch("fluor", "f", e)}>
-                <span className="fd"/> Fluorescent Marker
-              </div>
+        {/* STEP 2: LABEL */}
+        {step === 2 && pat && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83D\uDCA1"}</span><div className="tx"><b>Step 3: Attach Fluorescent Labels</b><br/>Click each strand (or drag the marker) to label it. Labels let you detect binding.</div></div>
+          <div style={{ textAlign: "center" }}>
+            <div className="fs" draggable onDragStart={e => startDrag("fluor", "f", e)} onTouchStart={e => startTouch("fluor", "f", e)}>
+              <span className="fd"/> Fluorescent Marker
             </div>
-            <div className="st">{strandOrder.map(i => {
-              const s = pat.strands[i]; const isL = labeled.has(s.id);
-              return <div key={s.id} data-strand-id={s.id} className={`sc ${isL ? "lab" : ""}`}
-                onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "fluor", () => setLabeled(p => new Set([...p, s.id])))}
-                onClick={() => { if (!isL) setLabeled(p => new Set([...p, s.id])); }}>
-                <span className="sn">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size=".7rem"/></div>
-                <div className={`ldz ${isL ? "on" : ""} ${dragType === "fluor" ? "act" : ""}`}>{isL && <span style={{ fontSize: ".5rem", color: "#fff" }}>✦</span>}</div>
-              </div>;
-            })}</div>
-            <div className="br"><button className="btn bo" onClick={() => setStep(1)}>← Back</button>
-              <button className="btn bp" disabled={!allLabeled} onClick={() => setStep(3)}>{allLabeled ? "Base-Pair →" : `Label ${pat.strands.length - labeled.size} more`}</button></div>
-          </div>}
+          </div>
+          <div className="st">{strandOrder.map(i => {
+            const s = pat.strands[i]; const isL = labeled.has(s.id);
+            return <div key={s.id} data-strand-id={s.id} className={"sc" + (isL ? " lab" : "")}
+              onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "fluor", () => setLabeled(p => new Set([...p, s.id])))}
+              onClick={() => { if (!isL) setLabeled(p => new Set([...p, s.id])); }}>
+              <span className="sn">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size=".7rem"/></div>
+              <div className={"ldz" + (isL ? " on" : "") + (dragType === "fluor" ? " act" : "")}>{isL && <span style={{ fontSize: ".5rem", color: "#fff" }}>{"\u2726"}</span>}</div>
+            </div>;
+          })}</div>
+          <div className="br"><button className="btn bo" onClick={() => setStep(1)}>{"\u2190"} Back</button>
+            <button className="btn bp" disabled={!allLabeled} onClick={() => setStep(3)}>{allLabeled ? "Base-Pair \u2192" : "Label " + (pat.strands.length - labeled.size) + " more"}</button></div>
+        </div>}
 
-          {/* STEP 3 */}
-          {step === 3 && pat && !washed && <div className="fade">
-            <div className="info"><span className="ic">🧬</span><div className="tx"><b>Step 4: Base-Pair Strands to Probes</b><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>. Not every strand matches a probe — leave non-matching strands in the tray. Hover a well and click ✕ to remove a strand.</div></div>
-            <div className="bpr">
-              <div className="bpc"><span className="b bA">A</span>⟷<span className="b bT">T</span></div>
-              <div className="bpc"><span className="b bT">T</span>⟷<span className="b bA">A</span></div>
-              <div className="bpc"><span className="b bG">G</span>⟷<span className="b bC">C</span></div>
-              <div className="bpc"><span className="b bC">C</span>⟷<span className="b bG">G</span></div>
-            </div>
-            <div className="hl">
-              <div className="hlf">
-                <div className="pw">
-                  <div className="pl">
-                    {wells.map((probeId, idx) => {
-                      const pr = probeId ? getProbe(probeId) : null;
-                      const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
-                      return <div key={idx} data-well-drop={idx} className={`wl fl ${strand ? "has-strand" : ""} ${dragType === "strand" && !strand && probeId !== "NC" ? "dt" : ""}`}
-                        onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "strand", sid => {
-                          setWellStrands(prev => { const n = { ...prev }; Object.keys(n).forEach(k => { if (n[k] === sid) delete n[k]; }); n[idx] = sid; return n; });
-                        })}>
-                        <span className="wid" style={{ fontSize: ".58rem" }}>{pr?.label}</span>
-                        <div className="wseq"><Seq seq={pr?.seq || ""} size=".44rem"/></div>
-                        {strand ? <>
-                          <div className="wsm"><Seq seq={strand.seq} size=".4rem"/></div>
-                          <div className="fdw"/><button className="rmb" onClick={e => { e.stopPropagation(); setWellStrands(prev => { const n = { ...prev }; delete n[idx]; return n; }); }}>✕</button>
-                        </> : probeId !== "NC" && <span style={{ fontSize: ".38rem", color: "#334155", marginTop: 2 }}>drop strand</span>}
-                      </div>;
-                    })}
-                    {washing && <div className="washov"/>}
-                  </div>
+        {/* STEP 3: BASE-PAIR */}
+        {step === 3 && pat && !washed && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83E\uDDEC"}</span><div className="tx"><b>Step 4: Base-Pair Strands to Probes</b><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>. Not every strand matches a probe {"\u2014"} leave non-matching strands in the tray. Hover a well and click {"\u2715"} to remove a strand.</div></div>
+          <div className="bpr">
+            <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bT">T</span></div>
+            <div className="bpc"><span className="b bT">T</span>{"\u27F7"}<span className="b bA">A</span></div>
+            <div className="bpc"><span className="b bG">G</span>{"\u27F7"}<span className="b bC">C</span></div>
+            <div className="bpc"><span className="b bC">C</span>{"\u27F7"}<span className="b bG">G</span></div>
+          </div>
+          <div className="hl">
+            <div className="hlf">
+              <div className="pw">
+                <div className="pl">
+                  {wells.map((probeId, idx) => {
+                    const pr = probeId ? getProbe(probeId) : null;
+                    const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
+                    return <div key={idx} data-well-drop={idx} className={"wl fl" + (strand ? " has-strand" : "") + (dragType === "strand" && !strand && probeId !== "NC" ? " dt" : "")}
+                      onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "strand", sid => {
+                        setWellStrands(prev => { const n = Object.assign({}, prev); Object.keys(n).forEach(k => { if (n[k] === sid) delete n[k]; }); n[idx] = sid; return n; });
+                      })}>
+                      <span className="wid" style={{ fontSize: ".58rem" }}>{pr ? pr.label : ""}</span>
+                      <div className="wseq"><Seq seq={pr ? pr.seq : ""} size=".44rem"/></div>
+                      {strand ? <>
+                        <div className="wsm"><Seq seq={strand.seq} size=".4rem"/></div>
+                        <div className="fdw"/><button className="rmb" onClick={e => { e.stopPropagation(); setWellStrands(prev => { const n = Object.assign({}, prev); delete n[idx]; return n; }); }}>{"\u2715"}</button>
+                      </> : probeId !== "NC" && <span style={{ fontSize: ".38rem", color: "#334155", marginTop: 2 }}>drop strand</span>}
+                    </div>;
+                  })}
+                  {washing && <div className="washov"/>}
                 </div>
               </div>
-              <div className="hlr">
-                <h4>🧪 Patient Strands</h4>
-                <div className="ut">{strandOrder.map(i => {
-                  const s = pat.strands[i]; const isP = placedStrandIds.has(s.id);
-                  return <div key={s.id} className={`us ${isP ? "placed" : ""}`}
-                    draggable={!isP} onDragStart={e => startDrag("strand", s.id, e)}
-                    onTouchStart={!isP ? e => startTouch("strand", s.id, e) : undefined}>
-                    <span className="fds"/><span className="usn">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size=".6rem"/></div>
-                  </div>;
-                })}</div>
-              </div>
             </div>
-            <div className="br">
-              <button className="btn bo" onClick={() => { setStep(2); setWellStrands({}); }}>← Back</button>
-              <button className="btn bg" onClick={doWash} disabled={Object.keys(wellStrands).length === 0 || washing}>{washing ? "Washing..." : "🧫 Wash Platform"}</button>
+            <div className="hlr">
+              <h4>{"\uD83E\uDDEA"} Patient Strands</h4>
+              <div className="ut">{strandOrder.map(i => {
+                const s = pat.strands[i]; const isP = placedStrandIds.has(s.id);
+                return <div key={s.id} className={"us" + (isP ? " placed" : "")}
+                  draggable={!isP} onDragStart={e => startDrag("strand", s.id, e)}
+                  onTouchStart={!isP ? e => startTouch("strand", s.id, e) : undefined}>
+                  <span className="fds"/><span className="usn">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size=".6rem"/></div>
+                </div>;
+              })}</div>
             </div>
-          </div>}
+          </div>
+          <div className="br">
+            <button className="btn bo" onClick={() => { setStep(2); setWellStrands({}); }}>{"\u2190"} Back</button>
+            <button className="btn bg" onClick={doWash} disabled={Object.keys(wellStrands).length === 0 || washing}>{washing ? "Washing..." : "\uD83E\uDDEB Wash Platform"}</button>
+          </div>
+        </div>}
 
-          {/* RESULTS */}
-          {step === 3 && washed && pat && <div className="fade">
-            <div className="info"><span className="ic">🔎</span><div className="tx"><b>Step 5: Read Results</b><br/>Wells with correctly base-paired strands <b style={{ color: "#22c55e" }}>glow green</b>. Mismatched strands were washed away.</div></div>
-            <div className="pw">
-              <div className="pl">
-                {wells.map((probeId, idx) => {
-                  const pr = probeId ? getProbe(probeId) : null;
-                  const res = washResults?.[idx]; const glows = res === "correct";
-                  const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
-                  return <div key={idx} className={`wl fl ${glows ? "glow" : ""} ${res === "wrong" ? "wrong" : ""} ${!res ? "dim" : ""}`}>
-                    <span className="wid" style={{ fontSize: ".58rem" }}>{pr?.label}</span>
-                    <div className="wseq"><Seq seq={pr?.seq || ""} size=".44rem"/></div>
-                    {glows && strand && <div className="wsm"><Seq seq={strand.seq} size=".4rem"/></div>}
-                    {glows && <div className="fdw"/>}
-                    {glows && <span className="bnd" style={{ color: "#22c55e" }}>✦ BOUND</span>}
-                    {res === "wrong" && <span className="bnd" style={{ color: "#f87171" }}>✗ WASHED</span>}
-                  </div>;
-                })}
-              </div>
+        {/* RESULTS */}
+        {step === 3 && washed && pat && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83D\uDD0E"}</span><div className="tx"><b>Step 5: Read Results</b><br/>Wells with correctly base-paired strands <b style={{ color: "#22c55e" }}>glow green</b>. Mismatched strands were washed away.</div></div>
+          <div className="pw">
+            <div className="pl">
+              {wells.map((probeId, idx) => {
+                const pr = probeId ? getProbe(probeId) : null;
+                const res = washResults ? washResults[idx] : null; const glows = res === "correct";
+                const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
+                return <div key={idx} className={"wl fl" + (glows ? " glow" : "") + (res === "wrong" ? " wrong" : "") + (!res ? " dim" : "")}>
+                  <span className="wid" style={{ fontSize: ".58rem" }}>{pr ? pr.label : ""}</span>
+                  <div className="wseq"><Seq seq={pr ? pr.seq : ""} size=".44rem"/></div>
+                  {glows && strand && <div className="wsm"><Seq seq={strand.seq} size=".4rem"/></div>}
+                  {glows && <div className="fdw"/>}
+                  {glows && <span className="bnd" style={{ color: "#22c55e" }}>{"\u2726"} BOUND</span>}
+                  {res === "wrong" && <span className="bnd" style={{ color: "#f87171" }}>{"\u2717"} WASHED</span>}
+                </div>;
+              })}
             </div>
+          </div>
 
-            <div style={{ textAlign: "center", margin: "12px 0 4px", fontSize: ".82rem" }}>
-              <span style={{ color: "#22c55e", fontWeight: 700 }}>{correctCount} correct</span>
-              {wrongCount > 0 && <span style={{ color: "#f87171", fontWeight: 700 }}> · {wrongCount} washed away</span>}
-              {missed.length > 0 && <span style={{ color: "#fbbf24", fontWeight: 700 }}> · {missed.length} missed</span>}
-            </div>
-            {wrongCount > 0 && <div className="mbox">⚠ {wrongCount} strand{wrongCount > 1 ? "s" : ""} not complementary — washed off.</div>}
-            {missed.length > 0 && <div className="mbox">⚠ {missed.length} matching strand{missed.length > 1 ? "s" : ""} left unplaced or on wrong well.</div>}
+          <div style={{ textAlign: "center", margin: "12px 0 4px", fontSize: ".82rem" }}>
+            <span style={{ color: "#22c55e", fontWeight: 700 }}>{correctCount} correct</span>
+            {wrongCount > 0 && <span style={{ color: "#f87171", fontWeight: 700 }}> {"\u00B7"} {wrongCount} washed away</span>}
+            {missed.length > 0 && <span style={{ color: "#fbbf24", fontWeight: 700 }}> {"\u00B7"} {missed.length} missed</span>}
+          </div>
+          {wrongCount > 0 && <div className="mbox">{"\u26A0"} {wrongCount} strand{wrongCount > 1 ? "s" : ""} not complementary {"\u2014"} washed off.</div>}
+          {missed.length > 0 && <div className="mbox">{"\u26A0"} {missed.length} matching strand{missed.length > 1 ? "s" : ""} left unplaced or on wrong well.</div>}
 
-            <h3 style={{ textAlign: "center", margin: "16px 0 4px", color: "#22d3ee", fontSize: ".88rem", fontWeight: 700 }}>🔑 Probe Key</h3>
-            <table className="kt"><thead><tr><th>Probe</th><th>Target Microorganism</th></tr></thead><tbody>
-              {PROBES.filter(p => p.id !== "NC").map(p => <tr key={p.id}><td style={{ fontWeight: 600 }}>{p.label}</td><td>{p.pathogen}</td></tr>)}
-            </tbody></table>
+          <h3 style={{ textAlign: "center", margin: "16px 0 4px", color: "#22d3ee", fontSize: ".88rem", fontWeight: 700 }}>{"\uD83D\uDD11"} Probe Key</h3>
+          <table className="kt"><thead><tr><th>Probe</th><th>Target Microorganism</th></tr></thead><tbody>
+            {PROBES.filter(p => p.id !== "NC").map(p => <tr key={p.id}><td style={{ fontWeight: 600 }}>{p.label}</td><td>{p.pathogen}</td></tr>)}
+          </tbody></table>
 
-            <div className="br">
-              <button className="btn bo" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide Answer" : "🔓 Check Answer"}</button>
-              <button className="btn bp" onClick={() => { setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); }}>🔄 Try Again</button>
-            </div>
-            {showKey && <div className="dbox fade"><h3>Patient {patient} — Diagnosis</h3><ul>{pat.answer.map((a, i) => <li key={i}><span style={{ color: "#22c55e" }}>✦</span> {a}</li>)}</ul></div>}
-            <div className="br"><button className="rl" onClick={resetAll}>↻ Start Over</button></div>
-          </div>}
+          <div className="br">
+            <button className="btn bo" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide Answer" : "\uD83D\uDD13 Check Answer"}</button>
+            <button className="btn bp" onClick={() => { setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); }}>{"\uD83D\uDD04"} Try Again</button>
+          </div>
+          {showKey && <div className="dbox fade"><h3>Patient {patient} {"\u2014"} Diagnosis</h3><ul>{pat.answer.map((a, i) => <li key={i}><span style={{ color: "#22c55e" }}>{"\u2726"}</span> {a}</li>)}</ul></div>}
+          <div className="br"><button className="rl" onClick={resetAll}>{"\u21BB"} Start Over</button></div>
+        </div>}
 
-        </div>
       </div>
-    </>
+    </div>
   );
 }
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
