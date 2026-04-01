@@ -24,7 +24,7 @@ body.dragging{overflow:hidden;touch-action:none}
 .bpr{display:flex;justify-content:center;gap:14px;margin:10px 0 14px;flex-wrap:wrap}
 .bpc{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:5px 14px;font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600;display:flex;align-items:center;gap:6px}
 .b{padding:2px 6px;border-radius:4px}
-.bA{background:#1e3a5f;color:#60a5fa}.bT{background:#3b1f1f;color:#f87171}.bG{background:#1a3320;color:#4ade80}.bC{background:#3b2f1a;color:#fbbf24}
+.bA{background:#1e3a5f;color:#60a5fa}.bT{background:#3b1f1f;color:#f87171}.bG{background:#1a3320;color:#4ade80}.bC{background:#3b2f1a;color:#fbbf24}.bU{background:#3b1a33;color:#e879f9}
 .pw{display:flex;flex-direction:column;align-items:center}
 .pl{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:linear-gradient(145deg,#1a1a2e,#16213e);border:2px solid #1e293b;border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);width:100%;max-width:720px;position:relative}
 .wl{border-radius:50%;background:#0f172a;border:2px dashed #334155;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all .3s;min-height:135px;aspect-ratio:1;overflow:visible;cursor:default}
@@ -85,7 +85,18 @@ body.dragging{overflow:hidden;touch-action:none}
 .fade{animation:fi .4s ease-out}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 .washov{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(56,189,248,.12),transparent);animation:ws 1.8s ease-out forwards;pointer-events:none;border-radius:16px;z-index:2}
 @keyframes ws{0%{opacity:0;transform:translateY(-100%)}30%{opacity:1}100%{opacity:0;transform:translateY(100%)}}
-@media(max-width:640px){:root{--seq-well:.46rem;--seq-card:.44rem;--seq-strand-well:.4rem;--seq-strand-list:.7rem;--seq-strand-side:.6rem}.pl{gap:5px;padding:8px;max-width:560px}.wl{min-height:76px}.wid{font-size:.62rem}.wlbl{font-size:.5rem}.bnd{font-size:.45rem}.fdw{width:8px;height:8px;top:4px;right:6px}.rmb{width:15px;height:15px;font-size:.5rem}.pc{width:105px;padding:6px 10px}.pc .pcl{font-size:.66rem}.sc{max-width:330px;padding:6px 10px}.sn{font-size:.66rem;width:22px}.ldz{width:22px;height:22px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}.hlr h4{font-size:.72rem}.us{padding:5px 8px}.usn{font-size:.58rem;width:16px}.fds{width:9px;height:9px}}
+.den-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin:10px 0}
+.den-visual{position:relative;width:280px;height:200px;display:flex;align-items:center;justify-content:center}
+.den-helix{display:flex;gap:4px;transition:all 1.2s ease-in-out}
+.den-helix.separated .den-strand-l{transform:translateX(-40px) rotate(-5deg)}.den-helix.separated .den-strand-r{transform:translateX(40px) rotate(5deg)}
+.den-strand-l,.den-strand-r{display:flex;flex-direction:column;gap:2px;transition:all 1.2s ease-in-out}
+.den-bp{width:28px;height:12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .8s}
+.den-bond{width:20px;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#475569;transition:opacity .6s}
+.den-helix.separated .den-bond{opacity:0}
+.den-temp{font-size:1.8rem;font-weight:800;transition:all .8s;font-family:'JetBrains Mono',monospace}
+.den-temp.hot{color:#f97316;text-shadow:0 0 20px rgba(249,115,22,.4)}
+.den-temp.cool{color:#64748b}
+.den-caption{font-size:.82rem;color:#94a3b8;text-align:center;max-width:400px;line-height:1.5;min-height:3em}@media(max-width:640px){:root{--seq-well:.46rem;--seq-card:.44rem;--seq-strand-well:.4rem;--seq-strand-list:.7rem;--seq-strand-side:.6rem}.pl{gap:5px;padding:8px;max-width:560px}.wl{min-height:76px}.wid{font-size:.62rem}.wlbl{font-size:.5rem}.bnd{font-size:.45rem}.fdw{width:8px;height:8px;top:4px;right:6px}.rmb{width:15px;height:15px;font-size:.5rem}.pc{width:105px;padding:6px 10px}.pc .pcl{font-size:.66rem}.sc{max-width:330px;padding:6px 10px}.sn{font-size:.66rem;width:22px}.ldz{width:22px;height:22px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}.hlr h4{font-size:.72rem}.us{padding:5px 8px}.usn{font-size:.58rem;width:16px}.fds{width:9px;height:9px}}
 </style>
 </head>
 <body>
@@ -109,8 +120,8 @@ const PROBES = [
 
 const isComplement = (a, b) => {
   if (a.length !== b.length) return false;
-  const c = { A: "T", T: "A", G: "C", C: "G" };
-  return a.split("").every((ch, i) => c[ch] === b[i]);
+  const pairs = { A: "TU", T: "A", U: "A", G: "C", C: "G" };
+  return a.split("").every((ch, i) => pairs[ch] && pairs[ch].includes(b[i]));
 };
 
 const PATIENTS = {
@@ -128,8 +139,8 @@ const PATIENTS = {
   Blue: {
     color: "#3B82F6", strands: [
       { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
-      { id: "s2", seq: "GGTTCCAAAGGT", bindsTo: "P3" },
-      { id: "s3", seq: "GGAATTCCGGAA", bindsTo: "P7" },
+      { id: "s2", seq: "GGUUCCAAAGGU", bindsTo: "P3" },
+      { id: "s3", seq: "GGAAUUCCGGAA", bindsTo: "P7" },
       { id: "s4", seq: "TTAGCAATCGGT", bindsTo: null },
       { id: "s5", seq: "TTCGAACCGATT", bindsTo: null },
       { id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },
@@ -139,7 +150,7 @@ const PATIENTS = {
   Green: {
     color: "#22C55E", strands: [
       { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
-      { id: "s2", seq: "TTGGAACCTTGG", bindsTo: "P5" },
+      { id: "s2", seq: "UUGGAACCUUGG", bindsTo: "P5" },
       { id: "s3", seq: "CCAAGGTTCCAA", bindsTo: "P6" },
       { id: "s4", seq: "AATTCCGGATTA", bindsTo: null },
       { id: "s5", seq: "TTAGCAATCGGT", bindsTo: null },
@@ -151,8 +162,8 @@ const PATIENTS = {
     color: "#A855F7", strands: [
       { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
       { id: "s2", seq: "CGAATTGGCCTA", bindsTo: "P2" },
-      { id: "s3", seq: "GGTTCCAAAGGT", bindsTo: "P3" },
-      { id: "s4", seq: "TTGGAACCTTGG", bindsTo: "P5" },
+      { id: "s3", seq: "GGUUCCAAAGGU", bindsTo: "P3" },
+      { id: "s4", seq: "UUGGAACCUUGG", bindsTo: "P5" },
       { id: "s5", seq: "TTAGCAATCGGT", bindsTo: null },
       { id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },
       { id: "s7", seq: "AATTCCGGATTA", bindsTo: null },
@@ -160,12 +171,12 @@ const PATIENTS = {
   },
 };
 
-const STEPS = ["Place Probes", "Select Patient", "Label DNA", "Base-Pair to Platform", "Wash & Results"];
+const STEPS = ["Place Probes", "Select Patient", "Denature", "Label DNA", "Base-Pair to Platform", "Wash & Results"];
 const getProbe = (id) => PROBES.find(p => p.id === id);
 
 const Seq = ({ seq, size }) => {
   const sz = size || "0.5rem";
-  const colors = { A: "#60a5fa", T: "#f87171", G: "#4ade80", C: "#fbbf24" };
+  const colors = { A: "#60a5fa", T: "#f87171", G: "#4ade80", C: "#fbbf24", U: "#e879f9" };
   return (
     <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: sz, letterSpacing: "0.03em", lineHeight: 1.3, wordBreak: "break-all", textAlign: "center" }}>
       {seq.split("").map((ch, i) => <span key={i} style={{ color: colors[ch] || "#64748b" }}>{ch}</span>)}
@@ -184,6 +195,8 @@ function App() {
   const [washing, setWashing] = useState(false);
   const [washResults, setWashResults] = useState(null);
   const [showKey, setShowKey] = useState(false);
+  const [denatured, setDenatured] = useState(false);
+  const [denaturing, setDenaturing] = useState(false);
   const [dragType, setDragType] = useState(null);
   const [dragId, setDragId] = useState(null);
   const ghostRef = useRef(null);
@@ -207,6 +220,7 @@ function App() {
     setStep(0); setWells(Array(8).fill(null)); setPatient(null);
     setLabeled(new Set()); setStrandOrder([]); setWellStrands({});
     setWashed(false); setWashing(false); setWashResults(null); setShowKey(false);
+    setDenatured(false); setDenaturing(false);
   };
 
   // Lock/unlock scrolling
@@ -347,20 +361,54 @@ function App() {
 
         {/* STEP 1: SELECT PATIENT */}
         {step === 1 && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 2: Select a Patient Sample</b><br/>Choose a blood sample. You'll identify pathogens by base-pairing the patient's DNA against your probes.</div></div>
+          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 2: Select a Patient Sample</b><br/>Choose a blood sample containing unknown nucleic acids. Some pathogens have <b>RNA</b> genomes (containing <span style={{color:"#e879f9",fontWeight:700}}>U</span> instead of <span style={{color:"#f87171",fontWeight:700}}>T</span>).</div></div>
           <div className="pr">{Object.entries(PATIENTS).map(([n, d]) =>
             <button key={n} className={"pb" + (patient === n ? " sel" : "")}
               style={{ borderColor: patient === n ? d.color : undefined, color: d.color, boxShadow: patient === n ? "0 0 16px " + d.color + "33" : undefined }}
-              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); }}>
+              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setDenatured(false); setDenaturing(false); }}>
               {"\uD83E\uDDEA"} {n}
             </button>)}
           </div>
           <div className="br"><button className="btn bo" onClick={() => setStep(0)}>{"\u2190"} Back</button><button className="btn bp" disabled={!patient} onClick={() => setStep(2)}>Continue {"\u2192"}</button></div>
         </div>}
 
-        {/* STEP 2: LABEL */}
+        {/* STEP 2: DENATURE */}
         {step === 2 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83D\uDCA1"}</span><div className="tx"><b>Step 3: Attach Fluorescent Labels</b><br/>Click each strand (or drag the marker) to label it. Labels let you detect binding.</div></div>
+          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the patient sample to <b>~95\u00B0C</b> to break hydrogen bonds and separate double-stranded DNA into single strands. Single-stranded nucleic acids can then hybridize with the probes on the platform.</div></div>
+          <div className="den-wrap">
+            <div className={"den-temp " + (denaturing || denatured ? "hot" : "cool")}>{denaturing || denatured ? "95\u00B0C" : "25\u00B0C"}</div>
+            <div className="den-visual">
+              <div className={"den-helix" + (denatured ? " separated" : "")}>
+                <div className="den-strand-l">
+                  {"ATGCGA".split("").map((b, i) => <div key={i} className="den-bp" style={{color:{A:"#60a5fa",T:"#f87171",G:"#4ade80",C:"#fbbf24"}[b]}}>{b}</div>)}
+                </div>
+                <div style={{display:"flex",flexDirection:"column",gap:2}}>
+                  {"......".split("").map((_, i) => <div key={i} className="den-bond">{denatured ? "" : "\u2500"}</div>)}
+                </div>
+                <div className="den-strand-r">
+                  {"TACGCT".split("").map((b, i) => <div key={i} className="den-bp" style={{color:{A:"#60a5fa",T:"#f87171",G:"#4ade80",C:"#fbbf24"}[b]}}>{b}</div>)}
+                </div>
+              </div>
+            </div>
+            <div className="den-caption">
+              {!denaturing && !denatured && "The patient sample contains double-stranded DNA. Hydrogen bonds hold the complementary strands together. Click Heat to denature."}
+              {denaturing && "Heating to 95\u00B0C\u2026 hydrogen bonds are breaking\u2026"}
+              {denatured && !denaturing && "Denaturation complete. The nucleic acids are now single-stranded and ready to be labeled and hybridized with your probes."}
+            </div>
+          </div>
+          <div className="br">
+            <button className="btn bo" onClick={() => { setStep(1); setDenatured(false); setDenaturing(false); }}>{"\u2190"} Back</button>
+            {!denatured ? <button className="btn bp" style={{background:"#c2410c"}} disabled={denaturing} onClick={() => {
+              setDenaturing(true);
+              setTimeout(() => { setDenatured(true); setDenaturing(false); }, 1800);
+            }}>{denaturing ? "Heating\u2026" : "\uD83C\uDF21 Heat to 95\u00B0C"}</button>
+            : <button className="btn bp" onClick={() => setStep(3)}>Continue {"\u2192"}</button>}
+          </div>
+        </div>}
+
+        {/* STEP 3: LABEL */}
+        {step === 3 && pat && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83D\uDCA1"}</span><div className="tx"><b>Step 4: Attach Fluorescent Labels</b><br/>Click each strand (or drag the marker) to label it. Labels let you detect binding. Note: some strands contain <span style={{color:"#e879f9",fontWeight:700}}>U</span> (uracil) instead of <span style={{color:"#f87171",fontWeight:700}}>T</span> (thymine) {"\u2014"} these are <b>RNA</b> from viral pathogens.</div></div>
           <div style={{ textAlign: "center" }}>
             <div className="fs" draggable onDragStart={e => startDrag("fluor", "f", e)} onTouchStart={e => startTouch("fluor", "f", e)}>
               <span className="fd"/> Fluorescent Marker
@@ -375,16 +423,16 @@ function App() {
               <div className={"ldz" + (isL ? " on" : "") + (dragType === "fluor" ? " act" : "")}>{isL && <span style={{ fontSize: ".5rem", color: "#fff" }}>{"\u2726"}</span>}</div>
             </div>;
           })}</div>
-          <div className="br"><button className="btn bo" onClick={() => setStep(1)}>{"\u2190"} Back</button>
-            <button className="btn bp" disabled={!allLabeled} onClick={() => setStep(3)}>{allLabeled ? "Base-Pair \u2192" : "Label " + (pat.strands.length - labeled.size) + " more"}</button></div>
+          <div className="br"><button className="btn bo" onClick={() => setStep(2)}>{"\u2190"} Back</button>
+            <button className="btn bp" disabled={!allLabeled} onClick={() => setStep(4)}>{allLabeled ? "Base-Pair \u2192" : "Label " + (pat.strands.length - labeled.size) + " more"}</button></div>
         </div>}
 
-        {/* STEP 3: BASE-PAIR */}
-        {step === 3 && pat && !washed && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDDEC"}</span><div className="tx"><b>Step 4: Base-Pair Strands to Probes</b><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>. Not every strand matches a probe {"\u2014"} leave non-matching strands in the tray. Hover a well and click {"\u2715"} to remove a strand.</div></div>
+        {/* STEP 4: BASE-PAIR */}
+        {step === 4 && pat && !washed && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83E\uDDEC"}</span><div className="tx"><b>Step 5: Base-Pair Strands to Probes</b><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>. Remember: <span style={{color:"#e879f9",fontWeight:700}}>U</span> pairs with <span style={{color:"#60a5fa",fontWeight:700}}>A</span> (just like T does). Not every strand matches a probe {"\u2014"} leave non-matching strands in the tray.</div></div>
           <div className="bpr">
             <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bT">T</span></div>
-            <div className="bpc"><span className="b bT">T</span>{"\u27F7"}<span className="b bA">A</span></div>
+            <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bU">U</span></div>
             <div className="bpc"><span className="b bG">G</span>{"\u27F7"}<span className="b bC">C</span></div>
             <div className="bpc"><span className="b bC">C</span>{"\u27F7"}<span className="b bG">G</span></div>
           </div>
@@ -424,14 +472,14 @@ function App() {
             </div>
           </div>
           <div className="br">
-            <button className="btn bo" onClick={() => { setStep(2); setWellStrands({}); }}>{"\u2190"} Back</button>
+            <button className="btn bo" onClick={() => { setStep(3); setWellStrands({}); }}>{"\u2190"} Back</button>
             <button className="btn bg" onClick={doWash} disabled={Object.keys(wellStrands).length === 0 || washing}>{washing ? "Washing..." : "\uD83E\uDDEB Wash Platform"}</button>
           </div>
         </div>}
 
         {/* RESULTS */}
-        {step === 3 && washed && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83D\uDD0E"}</span><div className="tx"><b>Step 5: Read Results</b><br/>Wells with correctly base-paired strands <b style={{ color: "#22c55e" }}>glow green</b>. Mismatched strands were washed away.</div></div>
+        {step === 4 && washed && pat && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83D\uDD0E"}</span><div className="tx"><b>Step 6: Read Results</b><br/>Wells with correctly base-paired strands <b style={{ color: "#22c55e" }}>glow green</b>. Mismatched strands were washed away.</div></div>
           <div className="pw">
             <div className="pl">
               {wells.map((probeId, idx) => {
