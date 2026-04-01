@@ -374,7 +374,7 @@ function App() {
 
         {/* STEP 2: DENATURE */}
         {step === 2 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the patient sample to <b>~95\u00B0C</b> to break hydrogen bonds and separate double-stranded DNA into single strands. Single-stranded nucleic acids can then hybridize with the probes on the platform.</div></div>
+          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the patient sample to <b>~95°C</b> to break hydrogen bonds and separate double-stranded DNA into single strands. Single-stranded nucleic acids can then hybridize with the probes on the platform.</div></div>
           <div className="den-wrap">
             <div className={"den-temp " + (denaturing || denatured ? "hot" : "cool")}>{denaturing || denatured ? "95\u00B0C" : "25\u00B0C"}</div>
             <div className="den-visual">
