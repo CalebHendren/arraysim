@@ -361,7 +361,7 @@ function App() {
 
         {/* STEP 1: SELECT PATIENT */}
         {step === 1 && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 2: Select a Patient Sample</b><br/>Choose a blood sample containing unknown nucleic acids. Some pathogens have <b>RNA</b> genomes (containing <span style={{color:"#e879f9",fontWeight:700}}>U</span> instead of <span style={{color:"#f87171",fontWeight:700}}>T</span>).</div></div>
+          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 2: Select a Patient Sample</b><br/>Choose a blood sample containing unknown nucleic acids.</div></div>
           <div className="pr">{Object.entries(PATIENTS).map(([n, d]) =>
             <button key={n} className={"pb" + (patient === n ? " sel" : "")}
               style={{ borderColor: patient === n ? d.color : undefined, color: d.color, boxShadow: patient === n ? "0 0 16px " + d.color + "33" : undefined }}
@@ -408,7 +408,7 @@ function App() {
 
         {/* STEP 3: LABEL */}
         {step === 3 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83D\uDCA1"}</span><div className="tx"><b>Step 4: Attach Fluorescent Labels</b><br/>Click each strand (or drag the marker) to label it. Labels let you detect binding. Note: some strands contain <span style={{color:"#e879f9",fontWeight:700}}>U</span> (uracil) instead of <span style={{color:"#f87171",fontWeight:700}}>T</span> (thymine) {"\u2014"} these are <b>RNA</b> from viral pathogens.</div></div>
+          <div className="info"><span className="ic">{"\uD83D\uDCA1"}</span><div className="tx"><b>Step 4: Attach Fluorescent Labels</b><br/>Click each strand (or drag the marker) to label it. Labels let you detect binding.</div></div>
           <div style={{ textAlign: "center" }}>
             <div className="fs" draggable onDragStart={e => startDrag("fluor", "f", e)} onTouchStart={e => startTouch("fluor", "f", e)}>
               <span className="fd"/> Fluorescent Marker
