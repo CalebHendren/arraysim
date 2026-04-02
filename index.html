@@ -429,7 +429,7 @@ function App() {
 
         {/* STEP 4: BASE-PAIR */}
         {step === 4 && pat && !washed && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDDEC"}</span><div className="tx"><b>Step 5: Base-Pair Strands to Probes</b><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>. Remember: <span style={{color:"#e879f9",fontWeight:700}}>U</span> pairs with <span style={{color:"#60a5fa",fontWeight:700}}>A</span> (just like T does). Not every strand matches a probe {"\u2014"} leave non-matching strands in the tray.</div></div>
+          <div className="info"><span className="ic">{"\uD83E\uDDEC"}</span><div className="tx"><b>Step 5: Base-Pair Strands to Probes</b><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>. Not every strand matches a probe {"\u2014"} leave non-matching strands in the tray. Note: In the real world, hybridization is spontaneous!</div></div>
           <div className="bpr">
             <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bT">T</span></div>
             <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bU">U</span></div>
