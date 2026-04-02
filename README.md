@@ -47,7 +47,7 @@ Single-file static site — no build step required.
 1. Clone this repo
 2. Go to **Settings → Pages → Source → Deploy from a branch**
 3. Select `main` / `/ (root)` and save
-4. Site will be live at `https://<username>.github.io/nucleic-acid-test/`
+4. Site will be live at `https://<username>.github.io/arraysim/`
 
 Or just open `index.html` in any browser.
 
