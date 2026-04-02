@@ -139,13 +139,13 @@ const PATIENTS = {
   Blue: {
     color: "#3B82F6", strands: [
       { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
-      { id: "s2", seq: "GGUUCCAAAGGU", bindsTo: "P3" },
+      { id: "s2", seq: "CCAAGGTTCCAA", bindsTo: "P6" },
       { id: "s3", seq: "GGAAUUCCGGAA", bindsTo: "P7" },
       { id: "s4", seq: "TTAGCAATCGGT", bindsTo: null },
       { id: "s5", seq: "TTCGAACCGATT", bindsTo: null },
       { id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },
       { id: "s7", seq: "GCAATCGGTACC", bindsTo: null },
-    ], answer: ["Human DNA (Positive Control)", "West Nile Virus", "HIV"],
+    ], answer: ["Human DNA (Positive Control)", "Treponema pallidum (Syphilis)", "HIV"],
   },
   Green: {
     color: "#22C55E", strands: [
@@ -223,7 +223,6 @@ function App() {
     setDenatured(false); setDenaturing(false);
   };
 
-  // Lock/unlock scrolling
   const lockScroll = useCallback(() => {
     isDraggingRef.current = true;
     document.body.classList.add("dragging");
@@ -234,15 +233,13 @@ function App() {
     document.body.classList.remove("dragging");
   }, []);
 
-  // Desktop drag
   const startDrag = (type, id, e) => {
     setDragType(type); setDragId(id);
     if (e.dataTransfer) { e.dataTransfer.setData("text/plain", type + ":" + id); e.dataTransfer.effectAllowed = "move"; }
   };
 
-  // Touch drag — prevents scrolling for the entire gesture
   const startTouch = (type, id, e) => {
-    e.preventDefault(); // prevent scroll from starting
+    e.preventDefault();
     lockScroll();
     const t = e.touches[0]; const el = e.currentTarget;
     const g = el.cloneNode(true);
@@ -252,11 +249,10 @@ function App() {
     setDragType(type); setDragId(id);
   };
 
-  // Global touch move/end — blocks scroll while dragging
   useEffect(() => {
     const mv = (e) => {
       if (!isDraggingRef.current) return;
-      e.preventDefault(); // block scroll during drag
+      e.preventDefault();
       if (ghostRef.current) {
         const t = e.touches[0];
         ghostRef.current.style.left = t.clientX - ghostRef.current.offsetWidth / 2 + "px";
@@ -374,7 +370,7 @@ function App() {
 
         {/* STEP 2: DENATURE */}
         {step === 2 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the patient sample to <b>~95°C</b> to break hydrogen bonds and separate double-stranded DNA into single strands. Single-stranded nucleic acids can then hybridize with the probes on the platform.</div></div>
+          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the patient sample to <b>~95&deg;C</b> to break hydrogen bonds and separate double-stranded DNA into single strands. Single-stranded nucleic acids can then hybridize with the probes on the platform.</div></div>
           <div className="den-wrap">
             <div className={"den-temp " + (denaturing || denatured ? "hot" : "cool")}>{denaturing || denatured ? "95\u00B0C" : "25\u00B0C"}</div>
             <div className="den-visual">
@@ -434,7 +430,6 @@ function App() {
             <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bT">T</span></div>
             <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bU">U</span></div>
             <div className="bpc"><span className="b bG">G</span>{"\u27F7"}<span className="b bC">C</span></div>
-            <div className="bpc"><span className="b bC">C</span>{"\u27F7"}<span className="b bG">G</span></div>
           </div>
           <div className="hl">
             <div className="hlf">
