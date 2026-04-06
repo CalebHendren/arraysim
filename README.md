@@ -2,20 +2,22 @@
 
 An interactive simulation of an array-based nucleic acid identification test for pathogen detection. Built for introductory microbiology courses as a digital replacement for paper-based lab activities.
 
-**[Website](https://calebhendren.github.io/arraysim/)**
+**[Website](https://calebhendren.github.io/arraysim)**
 
 ## Overview
 
 Students work through the complete diagnostic protocol to identify pathogens in simulated patient blood samples:
 
-1. **Place Probes** — Drag known DNA probe sequences onto a test platform (8 wells, including a negative control)
-2. **Select Patient** — Choose from 4 color-coded patient samples, each containing a mix of pathogen and non-pathogen nucleic acids
-3. **Denature** — Heat the sample to 95°C to separate double-stranded DNA into single strands (animated)
-4. **Label DNA** — Attach fluorescent markers to each patient strand
-5. **Base-Pair to Platform** — Manually match patient strands to complementary probe sequences using A↔T, A↔U, and G↔C pairing rules
+1. **Select Patient** — Choose from 4 color-coded patient blood samples, each containing a mix of pathogen and non-pathogen nucleic acids
+2. **Extract DNA/RNA** — Load the sample and a water balance tube into opposite slots of a centrifuge. If unbalanced, the spin fails. After centrifugation, plasma is separated and nucleic acids are extracted
+3. **Denature** — Heat the extracted nucleic acids to 95°C to separate double-stranded DNA into single strands (animated)
+4. **Label** — Attach fluorescent markers to each patient strand
+5. **Base-Pair** — Manually match patient strands to complementary probe sequences on the pre-loaded test platform using A↔T, A↔U, and G↔C pairing rules
 6. **Wash & Read Results** — Correctly paired strands glow green; mismatches wash away. Compare results against the probe key to diagnose the patient
 
 ## Pathogen Panel
+
+The test platform is pre-loaded with 7 probes and a negative control:
 
 | Probe | Target | Nucleic Acid |
 |-------|--------|--------------|
@@ -38,7 +40,7 @@ RNA virus strands use **uracil (U)** instead of thymine (T), which students must
 | Green | Hepatitis C, Syphilis |
 | Purple | Hepatitis B, West Nile, Hepatitis C |
 
-All patients test positive for the Human DNA control. Each sample also contains non-binding "junk" strands that don't match any probe.
+All patients test positive for the Human DNA control. Each sample also contains non-binding strands that don't match any probe.
 
 ## Deployment
 
@@ -47,7 +49,7 @@ Single-file static site — no build step required.
 1. Clone this repo
 2. Go to **Settings → Pages → Source → Deploy from a branch**
 3. Select `main` / `/ (root)` and save
-4. Site will be live at `https://<username>.github.io/arraysim/`
+4. Site will be live at `https://<username>.github.io/nucleic-acid-test/`
 
 Or just open `index.html` in any browser.
 
@@ -61,12 +63,13 @@ Or just open `index.html` in any browser.
 
 ## Pedagogical Notes
 
+- The **centrifuge balancing** step teaches that samples must be balanced by weight before spinning — an unbalanced centrifuge will damage equipment
+- The **extraction description** walks students through the real protocol: EDTA tube collection, centrifugation, lysis, and silica column purification
 - The **denaturation step** reinforces that hybridization requires single-stranded nucleic acids
 - Students must **manually base-pair** strands to probes rather than having the simulation auto-match, forcing them to practice complementarity rules
 - The simulation notes that **hybridization is spontaneous in the real protocol** — students are doing manually what hydrogen bonding does automatically
 - **RNA vs DNA distinction** is built into the activity: RNA viruses produce strands with U, requiring students to apply U↔A pairing
 - The **negative control** (empty well) and **positive control** (human DNA, which every patient should match) mirror real diagnostic test design
-- After washing, students see which matches they got right, which were wrong, and which they missed — then can retry or check the answer key
 
 ## License
 
