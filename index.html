@@ -43,11 +43,6 @@ body.dragging{overflow:hidden;touch-action:none}
 .rmb{position:absolute;top:3px;right:7px;background:#7f1d1d;color:#fca5a5;border:none;border-radius:50%;width:18px;height:18px;font-size:.55rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
 .wl:hover .rmb{opacity:1}
 .bnd{position:absolute;bottom:4px;font-size:.55rem;font-weight:700}
-.pt{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
-.pc{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:8px 12px;cursor:grab;user-select:none;transition:all .2s;text-align:center;width:130px;touch-action:none}
-.pc:hover{border-color:#22d3ee;transform:translateY(-2px);box-shadow:0 4px 12px rgba(34,211,238,.15)}
-.pc:active{cursor:grabbing}.pc.placed{opacity:.25;pointer-events:none}
-.pc .pcl{font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:2px}
 .pr{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
 .pb{padding:9px 18px;border-radius:10px;border:2px solid #334155;background:#111827;font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .2s;color:#e2e8f0}
 .pb:hover{transform:translateY(-2px)}.pb.sel{transform:scale(1.05)}
@@ -85,6 +80,7 @@ body.dragging{overflow:hidden;touch-action:none}
 .fade{animation:fi .4s ease-out}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 .washov{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(56,189,248,.12),transparent);animation:ws 1.8s ease-out forwards;pointer-events:none;border-radius:16px;z-index:2}
 @keyframes ws{0%{opacity:0;transform:translateY(-100%)}30%{opacity:1}100%{opacity:0;transform:translateY(100%)}}
+/* Denature */
 .den-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin:10px 0}
 .den-visual{position:relative;width:280px;height:200px;display:flex;align-items:center;justify-content:center}
 .den-helix{display:flex;gap:4px;transition:all 1.2s ease-in-out}
@@ -96,7 +92,37 @@ body.dragging{overflow:hidden;touch-action:none}
 .den-temp{font-size:1.8rem;font-weight:800;transition:all .8s;font-family:'JetBrains Mono',monospace}
 .den-temp.hot{color:#f97316;text-shadow:0 0 20px rgba(249,115,22,.4)}
 .den-temp.cool{color:#64748b}
-.den-caption{font-size:.82rem;color:#94a3b8;text-align:center;max-width:400px;line-height:1.5;min-height:3em}@media(max-width:640px){:root{--seq-well:.46rem;--seq-card:.44rem;--seq-strand-well:.4rem;--seq-strand-list:.7rem;--seq-strand-side:.6rem}.pl{gap:5px;padding:8px;max-width:560px}.wl{min-height:76px}.wid{font-size:.62rem}.wlbl{font-size:.5rem}.bnd{font-size:.45rem}.fdw{width:8px;height:8px;top:4px;right:6px}.rmb{width:15px;height:15px;font-size:.5rem}.pc{width:105px;padding:6px 10px}.pc .pcl{font-size:.66rem}.sc{max-width:330px;padding:6px 10px}.sn{font-size:.66rem;width:22px}.ldz{width:22px;height:22px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}.hlr h4{font-size:.72rem}.us{padding:5px 8px}.usn{font-size:.58rem;width:16px}.fds{width:9px;height:9px}}
+.den-caption{font-size:.82rem;color:#94a3b8;text-align:center;max-width:420px;line-height:1.5;min-height:3em}
+/* Centrifuge */
+.cf-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin:10px 0}
+.cf-area{display:flex;gap:30px;align-items:center;justify-content:center;flex-wrap:wrap}
+.cf-rotor-wrap{position:relative;width:240px;height:240px}
+.cf-rotor{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle,#1e293b 60%,#111827 100%);border:3px solid #334155;transition:border-color .3s}
+.cf-rotor.spinning{animation:cfSpin 0.3s linear infinite;border-color:#22d3ee}
+.cf-rotor.done{border-color:#22c55e}
+@keyframes cfSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.cf-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#0f172a;border:2px solid #475569;z-index:2}
+.cf-slot{position:absolute;width:46px;height:46px;border-radius:10px;background:#0f172a;border:2px dashed #334155;display:flex;align-items:center;justify-content:center;transition:all .3s;cursor:default}
+.cf-slot.highlight{border-color:#22d3ee;background:#0c2d3e;box-shadow:0 0 12px rgba(34,211,238,.2)}
+.cf-slot.filled{border-style:solid;border-color:#475569}
+.cf-slot .cf-tube{width:18px;height:32px;border-radius:4px 4px 8px 8px;position:relative}
+.cf-slot .cf-tube-cap{position:absolute;top:-4px;left:2px;right:2px;height:6px;border-radius:3px 3px 0 0;background:#94a3b8}
+.cf-slot-label{position:absolute;font-size:.48rem;font-weight:700;color:#475569;bottom:-14px;white-space:nowrap}
+.cf-tubes-tray{display:flex;flex-direction:column;gap:8px;align-items:center}
+.cf-tubes-tray h4{font-size:.72rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.cf-drag-tube{display:flex;align-items:center;gap:8px;background:#111827;border:1px solid #1e293b;border-radius:10px;padding:8px 14px;cursor:grab;user-select:none;transition:all .2s;touch-action:none}
+.cf-drag-tube:hover{border-color:#22d3ee;transform:translateY(-2px)}
+.cf-drag-tube:active{cursor:grabbing}
+.cf-drag-tube.placed{opacity:.2;pointer-events:none}
+.cf-drag-tube .cft-icon{width:16px;height:28px;border-radius:3px 3px 7px 7px;flex-shrink:0;position:relative}
+.cf-drag-tube .cft-icon-cap{position:absolute;top:-3px;left:1px;right:1px;height:5px;border-radius:2px 2px 0 0;background:#94a3b8}
+.cf-drag-tube .cft-label{font-size:.78rem;font-weight:600;color:#cbd5e1}
+.cf-msg{font-size:.78rem;padding:6px 14px;border-radius:8px;text-align:center;margin-top:4px}
+.cf-msg.warn{background:#7f1d1d33;border:1px solid #991b1b;color:#fca5a5}
+.cf-msg.ok{background:#064e3b55;border:1px solid #065f46;color:#6ee7b7}
+.cf-layers{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:8px}
+.cf-layer{width:120px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600}
+@media(max-width:640px){:root{--seq-well:.46rem;--seq-card:.44rem;--seq-strand-well:.4rem;--seq-strand-list:.7rem;--seq-strand-side:.6rem}.pl{gap:5px;padding:8px;max-width:560px}.wl{min-height:76px}.wid{font-size:.62rem}.wlbl{font-size:.5rem}.bnd{font-size:.45rem}.fdw{width:8px;height:8px;top:4px;right:6px}.rmb{width:15px;height:15px;font-size:.5rem}.sc{max-width:330px;padding:6px 10px}.sn{font-size:.66rem;width:22px}.ldz{width:22px;height:22px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}.hlr h4{font-size:.72rem}.us{padding:5px 8px}.usn{font-size:.58rem;width:16px}.fds{width:9px;height:9px}.cf-rotor-wrap{width:200px;height:200px}.cf-slot{width:38px;height:38px}.cf-slot .cf-tube{width:14px;height:26px}}
 </style>
 </head>
 <body>
@@ -117,6 +143,9 @@ const PROBES = [
   { id: "P6", label: "Probe 6", seq: "GGTTCCAAGGTT", pathogen: "Treponema pallidum (Syphilis)" },
   { id: "P7", label: "Probe 7", seq: "CCTTAAGGCCTT", pathogen: "HIV" },
 ];
+
+// Pre-loaded well layout
+const WELL_LAYOUT = ["NC","P1","P2","P3","P4","P5","P6","P7"];
 
 const isComplement = (a, b) => {
   if (a.length !== b.length) return false;
@@ -171,7 +200,7 @@ const PATIENTS = {
   },
 };
 
-const STEPS = ["Place Probes", "Select Patient", "Denature", "Label DNA", "Base-Pair to Platform", "Wash & Results"];
+const STEPS = ["Select Patient", "Extract DNA/RNA", "Denature", "Label", "Base-Pair", "Wash & Results"];
 const getProbe = (id) => PROBES.find(p => p.id === id);
 
 const Seq = ({ seq, size }) => {
@@ -184,10 +213,30 @@ const Seq = ({ seq, size }) => {
   );
 };
 
+// Centrifuge slot positions (6 slots around a circle)
+const SLOT_COUNT = 6;
+const getSlotPos = (i, containerSize) => {
+  const angle = (i * 360 / SLOT_COUNT) - 90;
+  const rad = angle * Math.PI / 180;
+  const radius = containerSize * 0.35;
+  const cx = containerSize / 2 + radius * Math.cos(rad) - 23;
+  const cy = containerSize / 2 + radius * Math.sin(rad) - 23;
+  return { left: cx, top: cy };
+};
+const getOpposite = (i) => (i + SLOT_COUNT / 2) % SLOT_COUNT;
+
 function App() {
   const [step, setStep] = useState(0);
-  const [wells, setWells] = useState(Array(8).fill(null));
   const [patient, setPatient] = useState(null);
+  // Centrifuge
+  const [cfSlots, setCfSlots] = useState(Array(SLOT_COUNT).fill(null)); // null | "sample" | "balance"
+  const [cfSpinning, setCfSpinning] = useState(false);
+  const [cfDone, setCfDone] = useState(false);
+  const [cfError, setCfError] = useState("");
+  // Denature
+  const [denatured, setDenatured] = useState(false);
+  const [denaturing, setDenaturing] = useState(false);
+  // Label & hybridize
   const [labeled, setLabeled] = useState(new Set());
   const [strandOrder, setStrandOrder] = useState([]);
   const [wellStrands, setWellStrands] = useState({});
@@ -195,17 +244,14 @@ function App() {
   const [washing, setWashing] = useState(false);
   const [washResults, setWashResults] = useState(null);
   const [showKey, setShowKey] = useState(false);
-  const [denatured, setDenatured] = useState(false);
-  const [denaturing, setDenaturing] = useState(false);
+  // Drag
   const [dragType, setDragType] = useState(null);
   const [dragId, setDragId] = useState(null);
   const ghostRef = useRef(null);
   const isDraggingRef = useRef(false);
 
   const pat = patient ? PATIENTS[patient] : null;
-  const placedProbes = new Set(wells.filter(Boolean));
   const placedStrandIds = new Set(Object.values(wellStrands));
-  const allProbesPlaced = wells.every(w => w !== null);
   const allLabeled = pat ? pat.strands.every(s => labeled.has(s.id)) : false;
 
   useEffect(() => {
@@ -217,21 +263,16 @@ function App() {
   }, [patient]);
 
   const resetAll = () => {
-    setStep(0); setWells(Array(8).fill(null)); setPatient(null);
+    setStep(0); setPatient(null);
+    setCfSlots(Array(SLOT_COUNT).fill(null)); setCfSpinning(false); setCfDone(false); setCfError("");
+    setDenatured(false); setDenaturing(false);
     setLabeled(new Set()); setStrandOrder([]); setWellStrands({});
     setWashed(false); setWashing(false); setWashResults(null); setShowKey(false);
-    setDenatured(false); setDenaturing(false);
   };
 
-  const lockScroll = useCallback(() => {
-    isDraggingRef.current = true;
-    document.body.classList.add("dragging");
-  }, []);
-
-  const unlockScroll = useCallback(() => {
-    isDraggingRef.current = false;
-    document.body.classList.remove("dragging");
-  }, []);
+  // --- DRAG SYSTEM ---
+  const lockScroll = useCallback(() => { isDraggingRef.current = true; document.body.classList.add("dragging"); }, []);
+  const unlockScroll = useCallback(() => { isDraggingRef.current = false; document.body.classList.remove("dragging"); }, []);
 
   const startDrag = (type, id, e) => {
     setDragType(type); setDragId(id);
@@ -239,8 +280,7 @@ function App() {
   };
 
   const startTouch = (type, id, e) => {
-    e.preventDefault();
-    lockScroll();
+    e.preventDefault(); lockScroll();
     const t = e.touches[0]; const el = e.currentTarget;
     const g = el.cloneNode(true);
     Object.assign(g.style, { position: "fixed", pointerEvents: "none", opacity: "0.8", zIndex: "9999", width: el.offsetWidth + "px", left: t.clientX - el.offsetWidth / 2 + "px", top: t.clientY - 25 + "px", transition: "none" });
@@ -253,11 +293,7 @@ function App() {
     const mv = (e) => {
       if (!isDraggingRef.current) return;
       e.preventDefault();
-      if (ghostRef.current) {
-        const t = e.touches[0];
-        ghostRef.current.style.left = t.clientX - ghostRef.current.offsetWidth / 2 + "px";
-        ghostRef.current.style.top = t.clientY - 25 + "px";
-      }
+      if (ghostRef.current) { const t = e.touches[0]; ghostRef.current.style.left = t.clientX - ghostRef.current.offsetWidth / 2 + "px"; ghostRef.current.style.top = t.clientY - 25 + "px"; }
     };
     const en = (e) => {
       if (!isDraggingRef.current) return;
@@ -265,9 +301,12 @@ function App() {
       unlockScroll();
       if (!dragType || !dragId) return;
       const t = e.changedTouches[0]; const els = document.elementsFromPoint(t.clientX, t.clientY);
-      if (dragType === "probe") {
-        const wellEl = els.find(el => el.dataset.wellIdx !== undefined);
-        if (wellEl) { const i = parseInt(wellEl.dataset.wellIdx); if (wells[i] === null) setWells(p => { const n = [...p]; n[i] = dragId; return n; }); }
+      if (dragType === "cftube") {
+        const slotEl = els.find(el => el.dataset.cfSlot !== undefined);
+        if (slotEl) {
+          const si = parseInt(slotEl.dataset.cfSlot);
+          if (cfSlots[si] === null) setCfSlots(prev => { const n = [...prev]; n[si] = dragId; return n; });
+        }
       } else if (dragType === "fluor") {
         const sEl = els.find(el => el.dataset.strandId);
         if (sEl) setLabeled(p => new Set([...p, sEl.dataset.strandId]));
@@ -283,7 +322,7 @@ function App() {
     window.addEventListener("touchmove", mv, { passive: false });
     window.addEventListener("touchend", en);
     return () => { window.removeEventListener("touchmove", mv); window.removeEventListener("touchend", en); };
-  }, [dragType, dragId, wells]);
+  }, [dragType, dragId, cfSlots]);
 
   const onGenericDrop = (e, type, handler) => {
     e.preventDefault();
@@ -293,11 +332,34 @@ function App() {
     setDragType(null); setDragId(null);
   };
 
+  // --- CENTRIFUGE ---
+  const samplePlaced = cfSlots.includes("sample");
+  const balancePlaced = cfSlots.includes("balance");
+  const isBalanced = () => {
+    const si = cfSlots.indexOf("sample");
+    const bi = cfSlots.indexOf("balance");
+    if (si === -1 || bi === -1) return false;
+    return getOpposite(si) === bi;
+  };
+
+  const doSpin = () => {
+    if (!samplePlaced || !balancePlaced) { setCfError("Place both tubes before spinning."); return; }
+    if (!isBalanced()) { setCfError("The centrifuge is unbalanced! The tubes must be in opposite slots."); return; }
+    setCfError(""); setCfSpinning(true);
+    setTimeout(() => { setCfSpinning(false); setCfDone(true); }, 3000);
+  };
+
+  const removeCfTube = (idx) => {
+    if (cfSpinning || cfDone) return;
+    setCfSlots(prev => { const n = [...prev]; n[idx] = null; return n; });
+  };
+
+  // --- WASH ---
   const doWash = () => {
     setWashing(true);
     setTimeout(() => {
       const results = {};
-      wells.forEach((probeId, idx) => {
+      WELL_LAYOUT.forEach((probeId, idx) => {
         if (!probeId || probeId === "NC") { results[idx] = null; return; }
         const sid = wellStrands[idx];
         if (!sid) { results[idx] = null; return; }
@@ -321,6 +383,9 @@ function App() {
   const wrongCount = washResults ? Object.values(washResults).filter(r => r === "wrong").length : 0;
   const missed = getMissed();
 
+  // Centrifuge slot size for positioning
+  const cfSize = typeof window !== "undefined" && window.innerWidth < 640 ? 200 : 240;
+
   return (
     <div>
       <div className="hdr">
@@ -330,47 +395,82 @@ function App() {
       <div className="sbar">{STEPS.map((s, i) => <div key={i} className={"sp" + (i === step ? " on" : i < step ? " dn" : "")}>{i < step ? "\u2713 " : ""}{s}</div>)}</div>
       <div className="bd">
 
-        {/* STEP 0: PLACE PROBES */}
+        {/* STEP 0: SELECT PATIENT */}
         {step === 0 && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83D\uDD2C"}</span><div className="tx"><b>Step 1: Place Probes on the Platform</b><br/>Drag each probe card onto an empty well. Click a filled well to remove it.</div></div>
-          <div className="pw">
-            <div className="pl">
-              {wells.map((pid, idx) => {
-                const pr = pid ? getProbe(pid) : null;
-                return <div key={idx} data-well-idx={idx} className={"wl" + (pr ? " fl" : "") + (dragType === "probe" && !pr ? " dt" : "")}
-                  onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "probe", id => { if (wells[idx] === null) setWells(p => { const n = [...p]; n[idx] = id; return n; }); })}
-                  onClick={() => { if (step === 0 && pr) setWells(p => { const n = [...p]; n[idx] = null; return n; }); }}>
-                  {pr ? <><span className="wid">{pr.label}</span><div className="wseq"><Seq seq={pr.seq} size="var(--seq-well)"/></div></> : <span className="wlbl">Well {idx + 1}</span>}
-                </div>;
-              })}
-            </div>
-            <div className="pt">
-              {PROBES.map(p => <div key={p.id} className={"pc" + (placedProbes.has(p.id) ? " placed" : "")}
-                draggable={!placedProbes.has(p.id)} onDragStart={e => startDrag("probe", p.id, e)}
-                onTouchStart={!placedProbes.has(p.id) ? e => startTouch("probe", p.id, e) : undefined}>
-                <div className="pcl">{p.label}</div><div className="wseq"><Seq seq={p.seq} size="var(--seq-card)"/></div>
-              </div>)}
-            </div>
-          </div>
-          <div className="br"><button className="btn bp" disabled={!allProbesPlaced} onClick={() => setStep(1)}>{allProbesPlaced ? "Continue \u2192" : "Place " + (8 - wells.filter(Boolean).length) + " more"}</button></div>
-        </div>}
-
-        {/* STEP 1: SELECT PATIENT */}
-        {step === 1 && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 2: Select a Patient Sample</b><br/>Choose a blood sample containing unknown nucleic acids.</div></div>
+          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 1: Select a Patient Sample</b><br/>Choose a blood sample containing unknown nucleic acids.</div></div>
           <div className="pr">{Object.entries(PATIENTS).map(([n, d]) =>
             <button key={n} className={"pb" + (patient === n ? " sel" : "")}
               style={{ borderColor: patient === n ? d.color : undefined, color: d.color, boxShadow: patient === n ? "0 0 16px " + d.color + "33" : undefined }}
-              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setDenatured(false); setDenaturing(false); }}>
+              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setDenatured(false); setDenaturing(false); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfSpinning(false); setCfError(""); }}>
               {"\uD83E\uDDEA"} {n}
             </button>)}
           </div>
-          <div className="br"><button className="btn bo" onClick={() => setStep(0)}>{"\u2190"} Back</button><button className="btn bp" disabled={!patient} onClick={() => setStep(2)}>Continue {"\u2192"}</button></div>
+          <div className="br"><button className="btn bp" disabled={!patient} onClick={() => setStep(1)}>Continue {"\u2192"}</button></div>
+        </div>}
+
+        {/* STEP 1: EXTRACT DNA/RNA */}
+        {step === 1 && pat && <div className="fade">
+          <div className="info"><span className="ic">{"\uD83E\uDDEA"}</span><div className="tx"><b>Step 2: Extract DNA/RNA</b><br/>The blood sample is collected in a purple-top (EDTA) tube and must be centrifuged to separate plasma from blood cells. Lysis buffer then breaks open cells and viral particles, and the nucleic acids are purified using a silica column. <b>Balance the centrifuge</b> by placing the sample and a water balance tube in <b>opposite</b> slots, then spin.</div></div>
+
+          <div className="cf-wrap">
+            <div className="cf-area">
+              <div className="cf-rotor-wrap" style={{width:cfSize,height:cfSize}}>
+                <div className={"cf-rotor" + (cfSpinning ? " spinning" : "") + (cfDone ? " done" : "")}>
+                  <div className="cf-center"/>
+                  {Array(SLOT_COUNT).fill(null).map((_, i) => {
+                    const pos = getSlotPos(i, cfSize);
+                    const content = cfSlots[i];
+                    const tubeColor = content === "sample" ? pat.color : content === "balance" ? "#64748b" : null;
+                    return <div key={i} data-cf-slot={i}
+                      className={"cf-slot" + (content ? " filled" : "") + (dragType === "cftube" && !content ? " highlight" : "")}
+                      style={{ left: pos.left, top: pos.top }}
+                      onDragOver={e => e.preventDefault()}
+                      onDrop={e => onGenericDrop(e, "cftube", id => { if (cfSlots[i] === null && !cfDone) setCfSlots(prev => { const n = [...prev]; n[i] = id; return n; }); })}
+                      onClick={() => removeCfTube(i)}>
+                      {content && <div className="cf-tube" style={{background: tubeColor}}><div className="cf-tube-cap"/></div>}
+                      <span className="cf-slot-label">{i + 1}</span>
+                    </div>;
+                  })}
+                </div>
+              </div>
+
+              <div className="cf-tubes-tray">
+                <h4>Tubes</h4>
+                <div className={"cf-drag-tube" + (samplePlaced ? " placed" : "")}
+                  draggable={!samplePlaced && !cfDone} onDragStart={e => startDrag("cftube", "sample", e)}
+                  onTouchStart={!samplePlaced && !cfDone ? e => startTouch("cftube", "sample", e) : undefined}>
+                  <div className="cft-icon" style={{background: pat.color}}><div className="cft-icon-cap"/></div>
+                  <span className="cft-label">Patient Sample</span>
+                </div>
+                <div className={"cf-drag-tube" + (balancePlaced ? " placed" : "")}
+                  draggable={!balancePlaced && !cfDone} onDragStart={e => startDrag("cftube", "balance", e)}
+                  onTouchStart={!balancePlaced && !cfDone ? e => startTouch("cftube", "balance", e) : undefined}>
+                  <div className="cft-icon" style={{background: "#64748b"}}><div className="cft-icon-cap"/></div>
+                  <span className="cft-label">Water Balance</span>
+                </div>
+              </div>
+            </div>
+
+            {cfError && <div className="cf-msg warn">{"\u26A0"} {cfError}</div>}
+            {cfDone && <div className="cf-msg ok">{"\u2713"} Centrifugation complete. Plasma separated. Nucleic acids extracted and purified.</div>}
+
+            {cfDone && <div className="cf-layers">
+              <div className="cf-layer" style={{background:"#fef3c7",color:"#92400e",borderRadius:"4px 4px 0 0"}}>Plasma (nucleic acids)</div>
+              <div className="cf-layer" style={{background:"#e2e8f0",color:"#475569",height:12,fontSize:".6rem"}}>Buffy coat</div>
+              <div className="cf-layer" style={{background:"#991b1b",color:"#fecaca",borderRadius:"0 0 4px 4px"}}>Red blood cells</div>
+            </div>}
+          </div>
+
+          <div className="br">
+            <button className="btn bo" onClick={() => { setStep(0); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfError(""); }}>{"\u2190"} Back</button>
+            {!cfDone ? <button className="btn bp" disabled={cfSpinning} onClick={doSpin}>{cfSpinning ? "Spinning\u2026" : "\uD83C\uDF00 Spin Centrifuge"}</button>
+            : <button className="btn bp" onClick={() => setStep(2)}>Continue {"\u2192"}</button>}
+          </div>
         </div>}
 
         {/* STEP 2: DENATURE */}
         {step === 2 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the patient sample to <b>~95&deg;C</b> to break hydrogen bonds and separate double-stranded DNA into single strands. Single-stranded nucleic acids can then hybridize with the probes on the platform.</div></div>
+          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the extracted nucleic acids to <b>~95&deg;C</b> to break hydrogen bonds and separate double-stranded DNA into single strands for hybridization.</div></div>
           <div className="den-wrap">
             <div className={"den-temp " + (denaturing || denatured ? "hot" : "cool")}>{denaturing || denatured ? "95\u00B0C" : "25\u00B0C"}</div>
             <div className="den-visual">
@@ -387,7 +487,7 @@ function App() {
               </div>
             </div>
             <div className="den-caption">
-              {!denaturing && !denatured && "The patient sample contains double-stranded DNA. Hydrogen bonds hold the complementary strands together. Click Heat to denature."}
+              {!denaturing && !denatured && "The extracted nucleic acids are double-stranded. Hydrogen bonds hold the complementary strands together. Click Heat to denature."}
               {denaturing && "Heating to 95\u00B0C\u2026 hydrogen bonds are breaking\u2026"}
               {denatured && !denaturing && "Denaturation complete. The nucleic acids are now single-stranded and ready to be labeled and hybridized with your probes."}
             </div>
@@ -435,15 +535,15 @@ function App() {
             <div className="hlf">
               <div className="pw">
                 <div className="pl">
-                  {wells.map((probeId, idx) => {
-                    const pr = probeId ? getProbe(probeId) : null;
+                  {WELL_LAYOUT.map((probeId, idx) => {
+                    const pr = getProbe(probeId);
                     const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
                     return <div key={idx} data-well-drop={idx} className={"wl fl" + (strand ? " has-strand" : "") + (dragType === "strand" && !strand && probeId !== "NC" ? " dt" : "")}
                       onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "strand", sid => {
                         setWellStrands(prev => { const n = Object.assign({}, prev); Object.keys(n).forEach(k => { if (n[k] === sid) delete n[k]; }); n[idx] = sid; return n; });
                       })}>
-                      <span className="wid">{pr ? pr.label : ""}</span>
-                      <div className="wseq"><Seq seq={pr ? pr.seq : ""} size="var(--seq-well)"/></div>
+                      <span className="wid">{pr.label}</span>
+                      <div className="wseq"><Seq seq={pr.seq} size="var(--seq-well)"/></div>
                       {strand ? <>
                         <div className="wsm"><Seq seq={strand.seq} size="var(--seq-strand-well)"/></div>
                         <div className="fdw"/><button className="rmb" onClick={e => { e.stopPropagation(); setWellStrands(prev => { const n = Object.assign({}, prev); delete n[idx]; return n; }); }}>{"\u2715"}</button>
@@ -477,13 +577,13 @@ function App() {
           <div className="info"><span className="ic">{"\uD83D\uDD0E"}</span><div className="tx"><b>Step 6: Read Results</b><br/>Wells with correctly base-paired strands <b style={{ color: "#22c55e" }}>glow green</b>. Mismatched strands were washed away.</div></div>
           <div className="pw">
             <div className="pl">
-              {wells.map((probeId, idx) => {
-                const pr = probeId ? getProbe(probeId) : null;
+              {WELL_LAYOUT.map((probeId, idx) => {
+                const pr = getProbe(probeId);
                 const res = washResults ? washResults[idx] : null; const glows = res === "correct";
                 const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
                 return <div key={idx} className={"wl fl" + (glows ? " glow" : "") + (res === "wrong" ? " wrong" : "") + (!res ? " dim" : "")}>
-                  <span className="wid">{pr ? pr.label : ""}</span>
-                  <div className="wseq"><Seq seq={pr ? pr.seq : ""} size="var(--seq-well)"/></div>
+                  <span className="wid">{pr.label}</span>
+                  <div className="wseq"><Seq seq={pr.seq} size="var(--seq-well)"/></div>
                   {glows && strand && <div className="wsm"><Seq seq={strand.seq} size="var(--seq-strand-well)"/></div>}
                   {glows && <div className="fdw"/>}
                   {glows && <span className="bnd" style={{ color: "#22c55e" }}>{"\u2726"} BOUND</span>}
