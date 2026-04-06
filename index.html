@@ -8,78 +8,123 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--seq-well:.6rem;--seq-card:.58rem;--seq-strand-well:.54rem;--seq-strand-list:.88rem;--seq-strand-side:.76rem}
-body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:#0a0e1a;color:#e2e8f0;-webkit-overflow-scrolling:touch}
+:root{
+  --seq-well:.6rem;--seq-card:.58rem;--seq-strand-well:.54rem;--seq-strand-list:.88rem;--seq-strand-side:.76rem;
+  --bg-primary:#0a0e1a;--bg-secondary:#111827;--bg-tertiary:#1e293b;--bg-card:#0f172a;
+  --border-primary:#1e293b;--border-secondary:#334155;--border-active:#22d3ee;--border-success:#22c55e;
+  --text-primary:#e2e8f0;--text-secondary:#94a3b8;--text-muted:#64748b;--text-heading:#cbd5e1;
+  --accent-cyan:#22d3ee;--accent-green:#22c55e;--accent-red:#f87171;--accent-orange:#f97316;
+  --focus-ring:0 0 0 3px rgba(34,211,238,0.6);
+  --base-a:#60a5fa;--base-t:#f87171;--base-g:#4ade80;--base-c:#fbbf24;--base-u:#e879f9;
+}
+.high-contrast{
+  --bg-primary:#000;--bg-secondary:#111;--bg-tertiary:#222;--bg-card:#000;
+  --border-primary:#666;--border-secondary:#888;--border-active:#00ffff;--border-success:#00ff66;
+  --text-primary:#fff;--text-secondary:#ccc;--text-muted:#aaa;--text-heading:#fff;
+  --accent-cyan:#00ffff;--accent-green:#00ff66;--accent-red:#ff4444;--accent-orange:#ff8800;
+  --focus-ring:0 0 0 3px #00ffff;
+  --base-a:#6699ff;--base-t:#ff6666;--base-g:#66ff66;--base-c:#ffcc00;--base-u:#ff66ff;
+}
+body{font-family:'Outfit',system-ui,sans-serif;min-height:100vh;background:var(--bg-primary);color:var(--text-primary);-webkit-overflow-scrolling:touch}
 body.dragging{overflow:hidden;touch-action:none}
-.hdr{text-align:center;padding:22px 16px 12px;background:linear-gradient(180deg,#111827,#0a0e1a);border-bottom:1px solid #1e293b}
-.hdr h1{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hdr p{font-size:.82rem;color:#64748b;margin-top:2px}
+
+/* Skip nav */
+.skip-link{position:absolute;top:-100px;left:16px;background:var(--accent-cyan);color:#000;padding:10px 18px;border-radius:8px;font-weight:700;font-size:.9rem;z-index:10000;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:12px}
+
+/* Focus indicators */
+*:focus-visible{outline:none;box-shadow:var(--focus-ring);border-radius:4px}
+button:focus-visible,div[tabindex="0"]:focus-visible,div[role="button"]:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+
+.hdr{text-align:center;padding:22px 16px 12px;background:linear-gradient(180deg,var(--bg-secondary),var(--bg-primary));border-bottom:1px solid var(--border-primary);position:relative}
+.hdr h1{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,var(--accent-cyan),#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr p{font-size:.82rem;color:var(--text-muted);margin-top:2px}
+.hc-toggle{position:absolute;top:12px;right:12px;background:var(--bg-tertiary);color:var(--text-secondary);border:1px solid var(--border-secondary);border-radius:8px;padding:6px 12px;font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s}
+.hc-toggle:hover{border-color:var(--text-muted);color:var(--text-primary)}
+
 .sbar{display:flex;justify-content:center;gap:5px;padding:12px 8px;background:#0d1224;flex-wrap:wrap}
-.sp{padding:5px 12px;border-radius:20px;font-size:.72rem;font-weight:600;border:1px solid #1e293b;color:#475569;transition:all .3s;white-space:nowrap}
-.sp.on{background:#164e63;border-color:#22d3ee;color:#22d3ee}
-.sp.dn{background:#064e3b;border-color:#34d399;color:#34d399}
+.sp{padding:5px 12px;border-radius:20px;font-size:.72rem;font-weight:600;border:1px solid var(--border-primary);color:var(--text-muted);transition:all .3s;white-space:nowrap}
+.sp.on{background:#164e63;border-color:var(--accent-cyan);color:var(--accent-cyan)}
+.sp.dn{background:#064e3b;border-color:var(--accent-green);color:var(--accent-green)}
+
 .bd{max-width:1060px;margin:0 auto;padding:14px}
-.info{background:#111827;border:1px solid #1e293b;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start}
-.info .ic{font-size:1.2rem;flex-shrink:0}.info .tx{font-size:.88rem;color:#94a3b8;line-height:1.5}.info b{color:#e2e8f0}
+.info{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start}
+.info .ic{font-size:1.2rem;flex-shrink:0}.info .tx{font-size:.88rem;color:var(--text-secondary);line-height:1.5}.info b{color:var(--text-primary)}
 .bpr{display:flex;justify-content:center;gap:14px;margin:10px 0 14px;flex-wrap:wrap}
-.bpc{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:5px 14px;font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600;display:flex;align-items:center;gap:6px}
+.bpc{background:var(--bg-tertiary);border:1px solid var(--border-secondary);border-radius:8px;padding:5px 14px;font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600;display:flex;align-items:center;gap:6px}
 .b{padding:2px 6px;border-radius:4px}
-.bA{background:#1e3a5f;color:#60a5fa}.bT{background:#3b1f1f;color:#f87171}.bG{background:#1a3320;color:#4ade80}.bC{background:#3b2f1a;color:#fbbf24}.bU{background:#3b1a33;color:#e879f9}
+.bA{background:#1e3a5f;color:var(--base-a)}.bT{background:#3b1f1f;color:var(--base-t)}.bG{background:#1a3320;color:var(--base-g)}.bC{background:#3b2f1a;color:var(--base-c)}.bU{background:#3b1a33;color:var(--base-u)}
+
+/* Platform */
 .pw{display:flex;flex-direction:column;align-items:center}
-.pl{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:linear-gradient(145deg,#1a1a2e,#16213e);border:2px solid #1e293b;border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);width:100%;max-width:720px;position:relative}
-.wl{border-radius:50%;background:#0f172a;border:2px dashed #334155;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all .3s;min-height:135px;aspect-ratio:1;overflow:visible;cursor:default}
-.wl.dt{border-color:#22d3ee;background:#0c2d3e;box-shadow:0 0 16px rgba(34,211,238,.2)}
-.wl.fl{border-style:solid;border-color:#334155;background:#111827}
-.wl.glow{border-color:#22c55e!important;background:radial-gradient(circle,#064e3b,#0f172a)!important;box-shadow:0 0 24px rgba(34,197,94,.5),0 0 48px rgba(34,197,94,.2)!important;animation:gp 2s ease-in-out infinite}
-.wl.dim{border-color:#1e293b;opacity:.35}
+.pl{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:linear-gradient(145deg,#1a1a2e,#16213e);border:2px solid var(--border-primary);border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);width:100%;max-width:720px;position:relative}
+.wl{border-radius:50%;background:var(--bg-card);border:2px solid var(--border-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all .3s;min-height:135px;aspect-ratio:1;overflow:visible;cursor:default}
+.wl.dt{border-color:var(--border-active);background:#0c2d3e;box-shadow:0 0 16px rgba(34,211,238,.2)}
+.wl.fl{border-color:var(--border-secondary);background:var(--bg-secondary)}
+.wl.glow{border-color:var(--accent-green)!important;background:radial-gradient(circle,#064e3b,var(--bg-card))!important;box-shadow:0 0 24px rgba(34,197,94,.5),0 0 48px rgba(34,197,94,.2)!important;animation:gp 2s ease-in-out infinite}
+.wl.dim{border-color:var(--border-primary);opacity:.35}
 .wl.wrong{animation:wo .6s ease-out forwards}
 @keyframes gp{0%,100%{box-shadow:0 0 24px rgba(34,197,94,.5),0 0 48px rgba(34,197,94,.2)}50%{box-shadow:0 0 36px rgba(34,197,94,.7),0 0 64px rgba(34,197,94,.3)}}
-@keyframes wo{0%{border-color:#f87171;opacity:1}100%{border-color:#1e293b;opacity:.4}}
-.wlbl{font-size:.62rem;font-weight:700;text-transform:uppercase;color:#64748b}
-.wid{font-size:.78rem;font-weight:700;color:#cbd5e1;margin-bottom:1px}
+@keyframes wo{0%{border-color:var(--accent-red);opacity:1}100%{border-color:var(--border-primary);opacity:.4}}
+.wlbl{font-size:.62rem;font-weight:700;text-transform:uppercase;color:var(--text-muted)}
+.wid{font-size:.78rem;font-weight:700;color:var(--text-heading);margin-bottom:1px}
 .wseq{text-align:center;padding:0 6px;word-break:break-all;line-height:1.3;margin-top:1px;display:flex;flex-wrap:wrap;justify-content:center}
 .wsm{text-align:center;word-break:break-all;margin-top:2px;display:flex;flex-wrap:wrap;justify-content:center}
-.fdw{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.6);position:absolute;top:6px;right:10px}
-.rmb{position:absolute;top:3px;right:7px;background:#7f1d1d;color:#fca5a5;border:none;border-radius:50%;width:18px;height:18px;font-size:.55rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
-.wl:hover .rmb{opacity:1}
+.fdw{width:10px;height:10px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 6px rgba(34,197,94,.6);position:absolute;top:6px;right:10px}
+.rmb{position:absolute;top:3px;right:7px;background:#7f1d1d;color:#fca5a5;border:none;border-radius:50%;width:24px;height:24px;font-size:.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.wl:hover .rmb,.rmb:focus-visible{opacity:1}
 .bnd{position:absolute;bottom:4px;font-size:.55rem;font-weight:700}
+
+/* Patient buttons */
 .pr{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
-.pb{padding:9px 18px;border-radius:10px;border:2px solid #334155;background:#111827;font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .2s;color:#e2e8f0}
+.pb{padding:9px 18px;border-radius:10px;border:2px solid var(--border-secondary);background:var(--bg-secondary);font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text-primary);min-height:44px}
 .pb:hover{transform:translateY(-2px)}.pb.sel{transform:scale(1.05)}
+
+/* Strand cards */
 .st{display:flex;flex-direction:column;gap:6px;align-items:center;margin:10px 0}
-.sc{display:flex;align-items:center;gap:8px;background:#111827;border:1px solid #1e293b;border-radius:10px;padding:8px 14px;width:100%;max-width:420px;transition:all .3s;cursor:pointer}
-.sc.lab{border-color:#22d3ee}
-.sn{font-size:.78rem;font-weight:700;color:#64748b;width:26px;flex-shrink:0}
+.sc{display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:10px;padding:8px 14px;width:100%;max-width:420px;transition:all .3s;cursor:pointer;min-height:44px}
+.sc.lab{border-color:var(--border-active)}
+.sc.sel-strand{border-color:var(--accent-orange);background:#1c1006;box-shadow:0 0 12px rgba(249,115,22,.2)}
+.sn{font-size:.78rem;font-weight:700;color:var(--text-muted);width:26px;flex-shrink:0}
 .ss{flex:1;display:flex;flex-wrap:wrap}
 .ldz{width:26px;height:26px;border-radius:50%;border:2px dashed #475569;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-.ldz.act{border-color:#22d3ee;background:rgba(34,211,238,.1)}.ldz.on{background:#22c55e;border:none;box-shadow:0 0 10px rgba(34,197,94,.6)}
-.fs{display:inline-flex;align-items:center;gap:7px;background:#064e3b;border:1px solid #22c55e;border-radius:20px;padding:7px 16px;cursor:grab;user-select:none;font-size:.82rem;font-weight:600;color:#34d399;margin:8px auto;box-shadow:0 0 12px rgba(34,197,94,.3);touch-action:none}
+.ldz.act{border-color:var(--border-active);background:rgba(34,211,238,.1)}.ldz.on{background:var(--accent-green);border:none;box-shadow:0 0 10px rgba(34,197,94,.6)}
+.fs{display:inline-flex;align-items:center;gap:7px;background:#064e3b;border:1px solid var(--accent-green);border-radius:20px;padding:7px 16px;cursor:grab;user-select:none;font-size:.82rem;font-weight:600;color:#34d399;margin:8px auto;box-shadow:0 0 12px rgba(34,197,94,.3);touch-action:none;min-height:44px}
 .fs:active{cursor:grabbing}
-.fd{width:14px;height:14px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.8)}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 24px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
+.fd{width:14px;height:14px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 6px rgba(34,197,94,.8)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 24px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;min-height:44px}
 .btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .bp{background:#0e7490;color:#fff}.bp:hover:not(:disabled){background:#0891b2}
 .bg{background:#15803d;color:#fff}.bg:hover:not(:disabled){background:#16a34a}
-.bo{background:transparent;color:#94a3b8;border:1px solid #334155}.bo:hover:not(:disabled){border-color:#64748b;color:#e2e8f0}
+.bo{background:transparent;color:var(--text-secondary);border:1px solid var(--border-secondary)}.bo:hover:not(:disabled){border-color:var(--text-muted);color:var(--text-primary)}
 .br{display:flex;justify-content:center;gap:7px;margin-top:14px;flex-wrap:wrap}
+
+/* Hybridize layout */
 .hl{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
 .hlf{flex:1;min-width:280px;max-width:720px}.hlr{width:280px;flex-shrink:0}
-.hlr h4{font-size:.78rem;color:#64748b;text-align:center;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.hlr h3{font-size:.78rem;color:var(--text-muted);text-align:center;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
 .ut{display:flex;flex-direction:column;gap:5px}
-.us{display:flex;align-items:center;gap:6px;background:#111827;border:1px solid #1e293b;border-radius:8px;padding:7px 10px;cursor:grab;user-select:none;transition:all .2s;touch-action:none}
-.us:hover{border-color:#22d3ee;transform:translateX(-2px)}.us:active{cursor:grabbing}.us.placed{opacity:.2;pointer-events:none}
-.fds{width:11px;height:11px;border-radius:50%;background:#22c55e;box-shadow:0 0 4px rgba(34,197,94,.5);flex-shrink:0}
-.usn{font-size:.68rem;font-weight:700;color:#64748b;width:20px}
+.us{display:flex;align-items:center;gap:6px;background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:8px;padding:7px 10px;cursor:grab;user-select:none;transition:all .2s;touch-action:none;min-height:44px}
+.us:hover{border-color:var(--border-active);transform:translateX(-2px)}.us:active{cursor:grabbing}
+.us.placed{opacity:.2;pointer-events:none}
+.us.sel-strand{border-color:var(--accent-orange);background:#1c1006;box-shadow:0 0 12px rgba(249,115,22,.2)}
+.fds{width:11px;height:11px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 4px rgba(34,197,94,.5);flex-shrink:0}
+.usn{font-size:.68rem;font-weight:700;color:var(--text-muted);width:20px}
+
+/* Key table */
 .kt{width:100%;max-width:520px;margin:14px auto;border-collapse:collapse}
-.kt th{background:#164e63;color:#22d3ee;padding:8px 14px;font-size:.82rem;text-align:left;font-weight:700}
-.kt td{padding:8px 14px;border-bottom:1px solid #1e293b;font-size:.84rem;color:#cbd5e1}.kt tr:nth-child(even) td{background:#0f172a}
-.dbox{background:linear-gradient(135deg,#064e3b,#0a1f14);border:2px solid #22c55e;border-radius:14px;padding:16px;text-align:center;margin:16px auto;max-width:460px}
-.dbox h3{color:#34d399;font-size:1rem;margin-bottom:6px}.dbox ul{list-style:none}.dbox li{font-size:.85rem;color:#e2e8f0;padding:2px 0;display:flex;align-items:center;justify-content:center;gap:5px}
+.kt th{background:#164e63;color:var(--accent-cyan);padding:8px 14px;font-size:.82rem;text-align:left;font-weight:700}
+.kt td{padding:8px 14px;border-bottom:1px solid var(--border-primary);font-size:.84rem;color:var(--text-heading)}.kt tr:nth-child(even) td{background:var(--bg-card)}
+.dbox{background:linear-gradient(135deg,#064e3b,#0a1f14);border:2px solid var(--accent-green);border-radius:14px;padding:16px;text-align:center;margin:16px auto;max-width:460px}
+.dbox h3{color:#34d399;font-size:1rem;margin-bottom:6px}.dbox ul{list-style:none}.dbox li{font-size:.85rem;color:var(--text-primary);padding:2px 0;display:flex;align-items:center;justify-content:center;gap:5px}
 .mbox{background:#1c1917;border:1px solid #92400e;border-radius:10px;padding:8px 12px;margin:8px auto;max-width:460px;text-align:center;font-size:.78rem;color:#fbbf24}
-.rl{color:#64748b;font-size:.74rem;cursor:pointer;text-decoration:underline;margin-top:8px;background:none;border:none;font-family:inherit}.rl:hover{color:#94a3b8}
+.rl{color:var(--text-muted);font-size:.74rem;cursor:pointer;text-decoration:underline;margin-top:8px;background:none;border:none;font-family:inherit;min-height:44px;display:inline-flex;align-items:center}.rl:hover{color:var(--text-secondary)}
 .fade{animation:fi .4s ease-out}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 .washov{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(56,189,248,.12),transparent);animation:ws 1.8s ease-out forwards;pointer-events:none;border-radius:16px;z-index:2}
 @keyframes ws{0%{opacity:0;transform:translateY(-100%)}30%{opacity:1}100%{opacity:0;transform:translateY(100%)}}
+
 /* Denature */
 .den-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin:10px 0}
 .den-visual{position:relative;width:280px;height:200px;display:flex;align-items:center;justify-content:center}
@@ -90,42 +135,52 @@ body.dragging{overflow:hidden;touch-action:none}
 .den-bond{width:20px;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#475569;transition:opacity .6s}
 .den-helix.separated .den-bond{opacity:0}
 .den-temp{font-size:1.8rem;font-weight:800;transition:all .8s;font-family:'JetBrains Mono',monospace}
-.den-temp.hot{color:#f97316;text-shadow:0 0 20px rgba(249,115,22,.4)}
-.den-temp.cool{color:#64748b}
-.den-caption{font-size:.82rem;color:#94a3b8;text-align:center;max-width:420px;line-height:1.5;min-height:3em}
+.den-temp.hot{color:var(--accent-orange);text-shadow:0 0 20px rgba(249,115,22,.4)}
+.den-temp.cool{color:var(--text-muted)}
+.den-caption{font-size:.82rem;color:var(--text-secondary);text-align:center;max-width:420px;line-height:1.5;min-height:3em}
+
 /* Centrifuge */
 .cf-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin:10px 0}
 .cf-area{display:flex;gap:30px;align-items:center;justify-content:center;flex-wrap:wrap}
 .cf-rotor-wrap{position:relative;width:240px;height:240px}
-.cf-rotor{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle,#1e293b 60%,#111827 100%);border:3px solid #334155;transition:border-color .3s}
-.cf-rotor.spinning{animation:cfSpin 0.3s linear infinite;border-color:#22d3ee}
-.cf-rotor.done{border-color:#22c55e}
+.cf-rotor{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle,var(--bg-tertiary) 60%,var(--bg-secondary) 100%);border:3px solid var(--border-secondary);transition:border-color .3s}
+.cf-rotor.spinning{animation:cfSpin .3s linear infinite;border-color:var(--accent-cyan)}
+.cf-rotor.done{border-color:var(--accent-green)}
 @keyframes cfSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.cf-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#0f172a;border:2px solid #475569;z-index:2}
-.cf-slot{position:absolute;width:46px;height:46px;border-radius:10px;background:#0f172a;border:2px dashed #334155;display:flex;align-items:center;justify-content:center;transition:all .3s;cursor:default}
-.cf-slot.highlight{border-color:#22d3ee;background:#0c2d3e;box-shadow:0 0 12px rgba(34,211,238,.2)}
+.cf-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:var(--bg-card);border:2px solid #475569;z-index:2}
+.cf-slot{position:absolute;width:48px;height:48px;border-radius:10px;background:var(--bg-card);border:2px dashed var(--border-secondary);display:flex;align-items:center;justify-content:center;transition:all .3s;cursor:pointer;min-width:48px;min-height:48px}
+.cf-slot.highlight{border-color:var(--border-active);background:#0c2d3e;box-shadow:0 0 12px rgba(34,211,238,.2)}
 .cf-slot.filled{border-style:solid;border-color:#475569}
 .cf-slot .cf-tube{width:18px;height:32px;border-radius:4px 4px 8px 8px;position:relative}
 .cf-slot .cf-tube-cap{position:absolute;top:-4px;left:2px;right:2px;height:6px;border-radius:3px 3px 0 0;background:#94a3b8}
-.cf-slot-label{position:absolute;font-size:.48rem;font-weight:700;color:#475569;bottom:-14px;white-space:nowrap}
+.cf-slot-label{position:absolute;font-size:.52rem;font-weight:700;color:var(--text-muted);bottom:-14px;white-space:nowrap}
 .cf-tubes-tray{display:flex;flex-direction:column;gap:8px;align-items:center}
-.cf-tubes-tray h4{font-size:.72rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.cf-drag-tube{display:flex;align-items:center;gap:8px;background:#111827;border:1px solid #1e293b;border-radius:10px;padding:8px 14px;cursor:grab;user-select:none;transition:all .2s;touch-action:none}
-.cf-drag-tube:hover{border-color:#22d3ee;transform:translateY(-2px)}
+.cf-tubes-tray h3{font-size:.72rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.cf-drag-tube{display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:10px;padding:8px 14px;cursor:grab;user-select:none;transition:all .2s;touch-action:none;min-height:44px}
+.cf-drag-tube:hover{border-color:var(--border-active);transform:translateY(-2px)}
 .cf-drag-tube:active{cursor:grabbing}
 .cf-drag-tube.placed{opacity:.2;pointer-events:none}
+.cf-drag-tube.sel-tube{border-color:var(--accent-orange);background:#1c1006;box-shadow:0 0 12px rgba(249,115,22,.2)}
 .cf-drag-tube .cft-icon{width:16px;height:28px;border-radius:3px 3px 7px 7px;flex-shrink:0;position:relative}
 .cf-drag-tube .cft-icon-cap{position:absolute;top:-3px;left:1px;right:1px;height:5px;border-radius:2px 2px 0 0;background:#94a3b8}
-.cf-drag-tube .cft-label{font-size:.78rem;font-weight:600;color:#cbd5e1}
+.cf-drag-tube .cft-label{font-size:.78rem;font-weight:600;color:var(--text-heading)}
 .cf-msg{font-size:.78rem;padding:6px 14px;border-radius:8px;text-align:center;margin-top:4px}
 .cf-msg.warn{background:#7f1d1d33;border:1px solid #991b1b;color:#fca5a5}
 .cf-msg.ok{background:#064e3b55;border:1px solid #065f46;color:#6ee7b7}
 .cf-layers{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:8px}
 .cf-layer{width:120px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600}
-@media(max-width:640px){:root{--seq-well:.46rem;--seq-card:.44rem;--seq-strand-well:.4rem;--seq-strand-list:.7rem;--seq-strand-side:.6rem}.pl{gap:5px;padding:8px;max-width:560px}.wl{min-height:76px}.wid{font-size:.62rem}.wlbl{font-size:.5rem}.bnd{font-size:.45rem}.fdw{width:8px;height:8px;top:4px;right:6px}.rmb{width:15px;height:15px;font-size:.5rem}.sc{max-width:330px;padding:6px 10px}.sn{font-size:.66rem;width:22px}.ldz{width:22px;height:22px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}.hlr h4{font-size:.72rem}.us{padding:5px 8px}.usn{font-size:.58rem;width:16px}.fds{width:9px;height:9px}.cf-rotor-wrap{width:200px;height:200px}.cf-slot{width:38px;height:38px}.cf-slot .cf-tube{width:14px;height:26px}}
+
+/* Live region */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Keyboard hint */
+.kb-hint{text-align:center;font-size:.72rem;color:var(--text-muted);margin:6px 0;font-style:italic}
+
+@media(max-width:640px){:root{--seq-well:.46rem;--seq-card:.44rem;--seq-strand-well:.4rem;--seq-strand-list:.7rem;--seq-strand-side:.6rem}.pl{gap:5px;padding:8px;max-width:560px}.wl{min-height:76px}.wid{font-size:.62rem}.wlbl{font-size:.5rem}.bnd{font-size:.45rem}.fdw{width:8px;height:8px;top:4px;right:6px}.rmb{width:24px;height:24px}.sc{max-width:330px;padding:6px 10px}.sn{font-size:.66rem;width:22px}.ldz{width:22px;height:22px}.hlr{width:100%}.hl{flex-direction:column;align-items:center}.us{padding:5px 8px}.usn{font-size:.58rem;width:16px}.fds{width:9px;height:9px}.cf-rotor-wrap{width:200px;height:200px}.cf-slot{width:44px;height:44px}.cf-slot .cf-tube{width:14px;height:26px}}
 </style>
 </head>
 <body>
+<a href="#main-content" className="skip-link" class="skip-link">Skip to main content</a>
 <div id="root"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -144,7 +199,6 @@ const PROBES = [
   { id: "P7", label: "Probe 7", seq: "CCTTAAGGCCTT", pathogen: "HIV" },
 ];
 
-// Pre-loaded well layout
 const WELL_LAYOUT = ["NC","P1","P2","P3","P4","P5","P6","P7"];
 
 const isComplement = (a, b) => {
@@ -154,50 +208,18 @@ const isComplement = (a, b) => {
 };
 
 const PATIENTS = {
-  Orange: {
-    color: "#F97316", strands: [
-      { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
-      { id: "s2", seq: "CGAATTGGCCTA", bindsTo: "P2" },
-      { id: "s3", seq: "AACCGGTTAACC", bindsTo: "P4" },
-      { id: "s4", seq: "TTAGCAATCGGT", bindsTo: null },
-      { id: "s5", seq: "GCAATCGGTACC", bindsTo: null },
-      { id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },
-      { id: "s7", seq: "AATTCCGGATTA", bindsTo: null },
-    ], answer: ["Human DNA (Positive Control)", "Hepatitis B Virus", "Plasmodium (Malaria)"],
-  },
-  Blue: {
-    color: "#3B82F6", strands: [
-      { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
-      { id: "s2", seq: "CCAAGGTTCCAA", bindsTo: "P6" },
-      { id: "s3", seq: "GGAAUUCCGGAA", bindsTo: "P7" },
-      { id: "s4", seq: "TTAGCAATCGGT", bindsTo: null },
-      { id: "s5", seq: "TTCGAACCGATT", bindsTo: null },
-      { id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },
-      { id: "s7", seq: "GCAATCGGTACC", bindsTo: null },
-    ], answer: ["Human DNA (Positive Control)", "Treponema pallidum (Syphilis)", "HIV"],
-  },
-  Green: {
-    color: "#22C55E", strands: [
-      { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
-      { id: "s2", seq: "UUGGAACCUUGG", bindsTo: "P5" },
-      { id: "s3", seq: "CCAAGGTTCCAA", bindsTo: "P6" },
-      { id: "s4", seq: "AATTCCGGATTA", bindsTo: null },
-      { id: "s5", seq: "TTAGCAATCGGT", bindsTo: null },
-      { id: "s6", seq: "TTCGAACCGATT", bindsTo: null },
-      { id: "s7", seq: "GCAATCGGTACC", bindsTo: null },
-    ], answer: ["Human DNA (Positive Control)", "Hepatitis C Virus", "Treponema pallidum (Syphilis)"],
-  },
-  Purple: {
-    color: "#A855F7", strands: [
-      { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },
-      { id: "s2", seq: "CGAATTGGCCTA", bindsTo: "P2" },
-      { id: "s3", seq: "GGUUCCAAAGGU", bindsTo: "P3" },
-      { id: "s4", seq: "UUGGAACCUUGG", bindsTo: "P5" },
-      { id: "s5", seq: "TTAGCAATCGGT", bindsTo: null },
-      { id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },
-      { id: "s7", seq: "AATTCCGGATTA", bindsTo: null },
-    ], answer: ["Human DNA (Positive Control)", "Hepatitis B Virus", "West Nile Virus", "Hepatitis C Virus"],
-  },
+  Orange: { color: "#F97316", strands: [
+    { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },{ id: "s2", seq: "CGAATTGGCCTA", bindsTo: "P2" },{ id: "s3", seq: "AACCGGTTAACC", bindsTo: "P4" },{ id: "s4", seq: "TTAGCAATCGGT", bindsTo: null },{ id: "s5", seq: "GCAATCGGTACC", bindsTo: null },{ id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },{ id: "s7", seq: "AATTCCGGATTA", bindsTo: null },
+  ], answer: ["Human DNA (Positive Control)", "Hepatitis B Virus", "Plasmodium (Malaria)"] },
+  Blue: { color: "#3B82F6", strands: [
+    { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },{ id: "s2", seq: "CCAAGGTTCCAA", bindsTo: "P6" },{ id: "s3", seq: "GGAAUUCCGGAA", bindsTo: "P7" },{ id: "s4", seq: "TTAGCAATCGGT", bindsTo: null },{ id: "s5", seq: "TTCGAACCGATT", bindsTo: null },{ id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },{ id: "s7", seq: "GCAATCGGTACC", bindsTo: null },
+  ], answer: ["Human DNA (Positive Control)", "Treponema pallidum (Syphilis)", "HIV"] },
+  Green: { color: "#22C55E", strands: [
+    { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },{ id: "s2", seq: "UUGGAACCUUGG", bindsTo: "P5" },{ id: "s3", seq: "CCAAGGTTCCAA", bindsTo: "P6" },{ id: "s4", seq: "AATTCCGGATTA", bindsTo: null },{ id: "s5", seq: "TTAGCAATCGGT", bindsTo: null },{ id: "s6", seq: "TTCGAACCGATT", bindsTo: null },{ id: "s7", seq: "GCAATCGGTACC", bindsTo: null },
+  ], answer: ["Human DNA (Positive Control)", "Hepatitis C Virus", "Treponema pallidum (Syphilis)"] },
+  Purple: { color: "#A855F7", strands: [
+    { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },{ id: "s2", seq: "CGAATTGGCCTA", bindsTo: "P2" },{ id: "s3", seq: "GGUUCCAAAGGU", bindsTo: "P3" },{ id: "s4", seq: "UUGGAACCUUGG", bindsTo: "P5" },{ id: "s5", seq: "TTAGCAATCGGT", bindsTo: null },{ id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },{ id: "s7", seq: "AATTCCGGATTA", bindsTo: null },
+  ], answer: ["Human DNA (Positive Control)", "Hepatitis B Virus", "West Nile Virus", "Hepatitis C Virus"] },
 };
 
 const STEPS = ["Select Patient", "Extract DNA/RNA", "Denature", "Label", "Base-Pair", "Wash & Results"];
@@ -205,34 +227,35 @@ const getProbe = (id) => PROBES.find(p => p.id === id);
 
 const Seq = ({ seq, size }) => {
   const sz = size || "0.5rem";
-  const colors = { A: "#60a5fa", T: "#f87171", G: "#4ade80", C: "#fbbf24", U: "#e879f9" };
   return (
-    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: sz, letterSpacing: "0.03em", lineHeight: 1.3, wordBreak: "break-all", textAlign: "center" }}>
-      {seq.split("").map((ch, i) => <span key={i} style={{ color: colors[ch] || "#64748b" }}>{ch}</span>)}
+    <span aria-label={"Sequence " + seq} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: sz, letterSpacing: "0.03em", lineHeight: 1.3, wordBreak: "break-all", textAlign: "center" }}>
+      {seq.split("").map((ch, i) => {
+        const c = {A:"var(--base-a)",T:"var(--base-t)",G:"var(--base-g)",C:"var(--base-c)",U:"var(--base-u)"}[ch] || "var(--text-muted)";
+        return <span key={i} style={{ color: c }}>{ch}</span>;
+      })}
     </span>
   );
 };
 
-// Centrifuge slot positions (6 slots around a circle)
 const SLOT_COUNT = 6;
-const getSlotPos = (i, containerSize) => {
+const getSlotPos = (i, sz) => {
   const angle = (i * 360 / SLOT_COUNT) - 90;
   const rad = angle * Math.PI / 180;
-  const radius = containerSize * 0.35;
-  const cx = containerSize / 2 + radius * Math.cos(rad) - 23;
-  const cy = containerSize / 2 + radius * Math.sin(rad) - 23;
-  return { left: cx, top: cy };
+  const r = sz * 0.35;
+  return { left: sz/2 + r*Math.cos(rad) - 24, top: sz/2 + r*Math.sin(rad) - 24 };
 };
 const getOpposite = (i) => (i + SLOT_COUNT / 2) % SLOT_COUNT;
 
 function App() {
   const [step, setStep] = useState(0);
   const [patient, setPatient] = useState(null);
+  const [highContrast, setHighContrast] = useState(false);
   // Centrifuge
-  const [cfSlots, setCfSlots] = useState(Array(SLOT_COUNT).fill(null)); // null | "sample" | "balance"
+  const [cfSlots, setCfSlots] = useState(Array(SLOT_COUNT).fill(null));
   const [cfSpinning, setCfSpinning] = useState(false);
   const [cfDone, setCfDone] = useState(false);
   const [cfError, setCfError] = useState("");
+  const [selectedTube, setSelectedTube] = useState(null); // keyboard: which tube is selected
   // Denature
   const [denatured, setDenatured] = useState(false);
   const [denaturing, setDenaturing] = useState(false);
@@ -240,6 +263,7 @@ function App() {
   const [labeled, setLabeled] = useState(new Set());
   const [strandOrder, setStrandOrder] = useState([]);
   const [wellStrands, setWellStrands] = useState({});
+  const [selectedStrand, setSelectedStrand] = useState(null); // keyboard: which strand is selected for placement
   const [washed, setWashed] = useState(false);
   const [washing, setWashing] = useState(false);
   const [washResults, setWashResults] = useState(null);
@@ -249,6 +273,9 @@ function App() {
   const [dragId, setDragId] = useState(null);
   const ghostRef = useRef(null);
   const isDraggingRef = useRef(false);
+  // Announcements
+  const [announcement, setAnnouncement] = useState("");
+  const announce = (msg) => { setAnnouncement(""); setTimeout(() => setAnnouncement(msg), 50); };
 
   const pat = patient ? PATIENTS[patient] : null;
   const placedStrandIds = new Set(Object.values(wellStrands));
@@ -264,10 +291,11 @@ function App() {
 
   const resetAll = () => {
     setStep(0); setPatient(null);
-    setCfSlots(Array(SLOT_COUNT).fill(null)); setCfSpinning(false); setCfDone(false); setCfError("");
+    setCfSlots(Array(SLOT_COUNT).fill(null)); setCfSpinning(false); setCfDone(false); setCfError(""); setSelectedTube(null);
     setDenatured(false); setDenaturing(false);
-    setLabeled(new Set()); setStrandOrder([]); setWellStrands({});
+    setLabeled(new Set()); setStrandOrder([]); setWellStrands({}); setSelectedStrand(null);
     setWashed(false); setWashing(false); setWashResults(null); setShowKey(false);
+    announce("Simulation reset.");
   };
 
   // --- DRAG SYSTEM ---
@@ -278,7 +306,6 @@ function App() {
     setDragType(type); setDragId(id);
     if (e.dataTransfer) { e.dataTransfer.setData("text/plain", type + ":" + id); e.dataTransfer.effectAllowed = "move"; }
   };
-
   const startTouch = (type, id, e) => {
     e.preventDefault(); lockScroll();
     const t = e.touches[0]; const el = e.currentTarget;
@@ -303,18 +330,16 @@ function App() {
       const t = e.changedTouches[0]; const els = document.elementsFromPoint(t.clientX, t.clientY);
       if (dragType === "cftube") {
         const slotEl = els.find(el => el.dataset.cfSlot !== undefined);
-        if (slotEl) {
-          const si = parseInt(slotEl.dataset.cfSlot);
-          if (cfSlots[si] === null) setCfSlots(prev => { const n = [...prev]; n[si] = dragId; return n; });
-        }
+        if (slotEl) { const si = parseInt(slotEl.dataset.cfSlot); if (cfSlots[si] === null) { setCfSlots(prev => { const n = [...prev]; n[si] = dragId; return n; }); announce(dragId + " tube placed in slot " + (si+1)); } }
       } else if (dragType === "fluor") {
         const sEl = els.find(el => el.dataset.strandId);
-        if (sEl) setLabeled(p => new Set([...p, sEl.dataset.strandId]));
+        if (sEl) { setLabeled(p => new Set([...p, sEl.dataset.strandId])); announce("Strand labeled."); }
       } else if (dragType === "strand") {
         const wEl = els.find(el => el.dataset.wellDrop !== undefined);
         if (wEl) {
           const idx = parseInt(wEl.dataset.wellDrop);
           setWellStrands(prev => { const n = Object.assign({}, prev); Object.keys(n).forEach(k => { if (n[k] === dragId) delete n[k]; }); n[idx] = dragId; return n; });
+          announce("Strand placed on " + getProbe(WELL_LAYOUT[idx]).label);
         }
       }
       setDragType(null); setDragId(null);
@@ -332,43 +357,78 @@ function App() {
     setDragType(null); setDragId(null);
   };
 
+  // --- KEYBOARD: CLICK-TO-SELECT-THEN-CLICK-TO-PLACE ---
+  // Centrifuge: click tube to select, then click slot to place
+  const handleTubeSelect = (tubeId) => {
+    if (cfDone || cfSpinning) return;
+    if (selectedTube === tubeId) { setSelectedTube(null); announce("Deselected " + tubeId + " tube."); }
+    else { setSelectedTube(tubeId); announce("Selected " + tubeId + " tube. Now click a slot to place it."); }
+  };
+  const handleSlotClick = (idx) => {
+    if (cfSpinning || cfDone) return;
+    if (cfSlots[idx] !== null) { // remove
+      const removed = cfSlots[idx];
+      setCfSlots(prev => { const n = [...prev]; n[idx] = null; return n; });
+      announce(removed + " tube removed from slot " + (idx+1));
+      return;
+    }
+    if (selectedTube && !cfSlots.includes(selectedTube)) {
+      setCfSlots(prev => { const n = [...prev]; n[idx] = selectedTube; return n; });
+      announce(selectedTube + " tube placed in slot " + (idx+1));
+      setSelectedTube(null);
+    }
+  };
+
+  // Strand: click strand to select, then click well to place
+  const handleStrandSelect = (strandId) => {
+    if (selectedStrand === strandId) { setSelectedStrand(null); announce("Deselected strand."); }
+    else { setSelectedStrand(strandId); announce("Selected strand. Now click a well to place it."); }
+  };
+  const handleWellClick = (idx) => {
+    if (!selectedStrand) return;
+    const probeId = WELL_LAYOUT[idx];
+    if (probeId === "NC") return;
+    setWellStrands(prev => {
+      const n = Object.assign({}, prev);
+      Object.keys(n).forEach(k => { if (n[k] === selectedStrand) delete n[k]; });
+      n[idx] = selectedStrand; return n;
+    });
+    announce("Strand placed on " + getProbe(probeId).label);
+    setSelectedStrand(null);
+  };
+
   // --- CENTRIFUGE ---
   const samplePlaced = cfSlots.includes("sample");
   const balancePlaced = cfSlots.includes("balance");
   const isBalanced = () => {
-    const si = cfSlots.indexOf("sample");
-    const bi = cfSlots.indexOf("balance");
+    const si = cfSlots.indexOf("sample"); const bi = cfSlots.indexOf("balance");
     if (si === -1 || bi === -1) return false;
     return getOpposite(si) === bi;
   };
-
   const doSpin = () => {
-    if (!samplePlaced || !balancePlaced) { setCfError("Place both tubes before spinning."); return; }
-    if (!isBalanced()) { setCfError("The centrifuge is unbalanced! The tubes must be in opposite slots."); return; }
-    setCfError(""); setCfSpinning(true);
-    setTimeout(() => { setCfSpinning(false); setCfDone(true); }, 3000);
-  };
-
-  const removeCfTube = (idx) => {
-    if (cfSpinning || cfDone) return;
-    setCfSlots(prev => { const n = [...prev]; n[idx] = null; return n; });
+    if (!samplePlaced || !balancePlaced) { setCfError("Place both tubes before spinning."); announce("Error: place both tubes before spinning."); return; }
+    if (!isBalanced()) { setCfError("The centrifuge is unbalanced! The tubes must be in opposite slots."); announce("Error: centrifuge is unbalanced. Tubes must be in opposite slots."); return; }
+    setCfError(""); setCfSpinning(true); announce("Centrifuge spinning.");
+    setTimeout(() => { setCfSpinning(false); setCfDone(true); announce("Centrifugation complete. Nucleic acids extracted."); }, 3000);
   };
 
   // --- WASH ---
   const doWash = () => {
-    setWashing(true);
+    setWashing(true); announce("Washing platform.");
     setTimeout(() => {
       const results = {};
       WELL_LAYOUT.forEach((probeId, idx) => {
         if (!probeId || probeId === "NC") { results[idx] = null; return; }
-        const sid = wellStrands[idx];
-        if (!sid) { results[idx] = null; return; }
+        const sid = wellStrands[idx]; if (!sid) { results[idx] = null; return; }
         const strand = pat.strands.find(s => s.id === sid);
         const probe = getProbe(probeId);
         if (!strand || !probe || probe.id === "NC") { results[idx] = null; return; }
         results[idx] = isComplement(strand.seq, probe.seq) ? "correct" : "wrong";
       });
       setWashResults(results); setWashed(true); setWashing(false);
+      const cc = Object.values(results).filter(r => r === "correct").length;
+      const wc = Object.values(results).filter(r => r === "wrong").length;
+      announce("Wash complete. " + cc + " correct, " + wc + " washed away.");
     }, 2000);
   };
 
@@ -378,83 +438,99 @@ function App() {
     Object.entries(washResults).forEach(([i, r]) => { if (r === "correct") correct.add(wellStrands[parseInt(i)]); });
     return pat.strands.filter(s => s.bindsTo && !correct.has(s.id));
   };
-
   const correctCount = washResults ? Object.values(washResults).filter(r => r === "correct").length : 0;
   const wrongCount = washResults ? Object.values(washResults).filter(r => r === "wrong").length : 0;
   const missed = getMissed();
-
-  // Centrifuge slot size for positioning
   const cfSize = typeof window !== "undefined" && window.innerWidth < 640 ? 200 : 240;
 
   return (
-    <div>
-      <div className="hdr">
+    <div className={highContrast ? "high-contrast" : ""}>
+      {/* Live region for screen reader announcements */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">{announcement}</div>
+
+      <header className="hdr">
         <h1>{"\uD83E\uDDEC"} Nucleic Acid Identification Test</h1>
         <p>Base-pair patient DNA to identify pathogens</p>
-      </div>
-      <div className="sbar">{STEPS.map((s, i) => <div key={i} className={"sp" + (i === step ? " on" : i < step ? " dn" : "")}>{i < step ? "\u2713 " : ""}{s}</div>)}</div>
-      <div className="bd">
+        <button className="hc-toggle" onClick={() => { setHighContrast(!highContrast); announce(highContrast ? "High contrast mode off." : "High contrast mode on."); }}
+          aria-pressed={highContrast}>{highContrast ? "\u2713 High Contrast" : "High Contrast"}</button>
+      </header>
+
+      <nav className="sbar" aria-label="Simulation progress">
+        {STEPS.map((s, i) => <div key={i} className={"sp" + (i === step ? " on" : i < step ? " dn" : "")} aria-current={i === step ? "step" : undefined}>{i < step ? "\u2713 " : ""}{s}</div>)}
+      </nav>
+
+      <main id="main-content" className="bd">
 
         {/* STEP 0: SELECT PATIENT */}
-        {step === 0 && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDE78"}</span><div className="tx"><b>Step 1: Select a Patient Sample</b><br/>Choose a blood sample containing unknown nucleic acids.</div></div>
-          <div className="pr">{Object.entries(PATIENTS).map(([n, d]) =>
-            <button key={n} className={"pb" + (patient === n ? " sel" : "")}
+        {step === 0 && <section className="fade" aria-labelledby="step0-heading">
+          <div className="info"><span className="ic" aria-hidden="true">{"\uD83E\uDE78"}</span><div className="tx"><h2 id="step0-heading" style={{fontSize:"inherit",fontWeight:700,color:"var(--text-primary)",display:"inline"}}>Step 1: Select a Patient Sample</h2><br/>Choose a blood sample containing unknown nucleic acids.</div></div>
+          <div className="pr" role="radiogroup" aria-label="Patient samples">{Object.entries(PATIENTS).map(([n, d]) =>
+            <button key={n} className={"pb" + (patient === n ? " sel" : "")} role="radio" aria-checked={patient === n}
               style={{ borderColor: patient === n ? d.color : undefined, color: d.color, boxShadow: patient === n ? "0 0 16px " + d.color + "33" : undefined }}
-              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setDenatured(false); setDenaturing(false); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfSpinning(false); setCfError(""); }}>
+              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setDenatured(false); setDenaturing(false); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfSpinning(false); setCfError(""); setSelectedTube(null); setSelectedStrand(null); announce("Selected " + n + " patient sample."); }}>
               {"\uD83E\uDDEA"} {n}
             </button>)}
           </div>
           <div className="br"><button className="btn bp" disabled={!patient} onClick={() => setStep(1)}>Continue {"\u2192"}</button></div>
-        </div>}
+        </section>}
 
         {/* STEP 1: EXTRACT DNA/RNA */}
-        {step === 1 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDDEA"}</span><div className="tx"><b>Step 2: Extract DNA/RNA</b><br/>The blood sample is collected in a purple-top (EDTA) tube and must be centrifuged to separate plasma from blood cells. Lysis buffer then breaks open cells and viral particles, and the nucleic acids are purified using a silica column. <b>Balance the centrifuge</b> by placing the sample and a water balance tube in <b>opposite</b> slots, then spin.</div></div>
+        {step === 1 && pat && <section className="fade" aria-labelledby="step1-heading">
+          <div className="info"><span className="ic" aria-hidden="true">{"\uD83E\uDDEA"}</span><div className="tx"><h2 id="step1-heading" style={{fontSize:"inherit",fontWeight:700,color:"var(--text-primary)",display:"inline"}}>Step 2: Extract DNA/RNA</h2><br/>The blood sample is collected in a purple-top (EDTA) tube and must be centrifuged to separate plasma from blood cells. Lysis buffer then breaks open cells and viral particles, and the nucleic acids are purified using a silica column. <b>Balance the centrifuge</b> by placing the sample and a water balance tube in <b>opposite</b> slots, then spin.</div></div>
 
           <div className="cf-wrap">
+            <p className="kb-hint">Click a tube to select it, then click a slot to place it. Click a filled slot to remove its tube.</p>
             <div className="cf-area">
-              <div className="cf-rotor-wrap" style={{width:cfSize,height:cfSize}}>
-                <div className={"cf-rotor" + (cfSpinning ? " spinning" : "") + (cfDone ? " done" : "")}>
-                  <div className="cf-center"/>
+              <div className="cf-rotor-wrap" style={{width:cfSize,height:cfSize}} role="group" aria-label="Centrifuge rotor with 6 slots">
+                <div className={"cf-rotor" + (cfSpinning ? " spinning" : "") + (cfDone ? " done" : "")} aria-label={cfSpinning ? "Centrifuge spinning" : cfDone ? "Centrifuge complete" : "Centrifuge idle"}>
+                  <div className="cf-center" aria-hidden="true"/>
                   {Array(SLOT_COUNT).fill(null).map((_, i) => {
-                    const pos = getSlotPos(i, cfSize);
-                    const content = cfSlots[i];
+                    const pos = getSlotPos(i, cfSize); const content = cfSlots[i];
                     const tubeColor = content === "sample" ? pat.color : content === "balance" ? "#64748b" : null;
-                    return <div key={i} data-cf-slot={i}
-                      className={"cf-slot" + (content ? " filled" : "") + (dragType === "cftube" && !content ? " highlight" : "")}
+                    return <div key={i} data-cf-slot={i} tabIndex={0} role="button"
+                      aria-label={"Slot " + (i+1) + (content ? ", contains " + content + " tube" : ", empty") + ". Opposite of slot " + (getOpposite(i)+1)}
+                      className={"cf-slot" + (content ? " filled" : "") + (selectedTube && !content ? " highlight" : "")}
                       style={{ left: pos.left, top: pos.top }}
                       onDragOver={e => e.preventDefault()}
-                      onDrop={e => onGenericDrop(e, "cftube", id => { if (cfSlots[i] === null && !cfDone) setCfSlots(prev => { const n = [...prev]; n[i] = id; return n; }); })}
-                      onClick={() => removeCfTube(i)}>
-                      {content && <div className="cf-tube" style={{background: tubeColor}}><div className="cf-tube-cap"/></div>}
-                      <span className="cf-slot-label">{i + 1}</span>
+                      onDrop={e => onGenericDrop(e, "cftube", id => { if (cfSlots[i] === null && !cfDone) { setCfSlots(prev => { const n = [...prev]; n[i] = id; return n; }); announce(id + " tube placed in slot " + (i+1)); } })}
+                      onClick={() => handleSlotClick(i)}
+                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleSlotClick(i); } }}>
+                      {content && <div className="cf-tube" style={{background: tubeColor}} aria-hidden="true"><div className="cf-tube-cap"/></div>}
+                      <span className="cf-slot-label" aria-hidden="true">{i + 1}</span>
                     </div>;
                   })}
                 </div>
               </div>
 
               <div className="cf-tubes-tray">
-                <h4>Tubes</h4>
-                <div className={"cf-drag-tube" + (samplePlaced ? " placed" : "")}
+                <h3>Tubes</h3>
+                <div className={"cf-drag-tube" + (samplePlaced ? " placed" : "") + (selectedTube === "sample" ? " sel-tube" : "")}
+                  tabIndex={samplePlaced || cfDone ? -1 : 0} role="button"
+                  aria-label={"Patient sample tube" + (samplePlaced ? ", placed" : "") + (selectedTube === "sample" ? ", selected" : "")}
                   draggable={!samplePlaced && !cfDone} onDragStart={e => startDrag("cftube", "sample", e)}
-                  onTouchStart={!samplePlaced && !cfDone ? e => startTouch("cftube", "sample", e) : undefined}>
-                  <div className="cft-icon" style={{background: pat.color}}><div className="cft-icon-cap"/></div>
+                  onTouchStart={!samplePlaced && !cfDone ? e => startTouch("cftube", "sample", e) : undefined}
+                  onClick={() => handleTubeSelect("sample")}
+                  onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleTubeSelect("sample"); } }}>
+                  <div className="cft-icon" style={{background: pat.color}} aria-hidden="true"><div className="cft-icon-cap"/></div>
                   <span className="cft-label">Patient Sample</span>
                 </div>
-                <div className={"cf-drag-tube" + (balancePlaced ? " placed" : "")}
+                <div className={"cf-drag-tube" + (balancePlaced ? " placed" : "") + (selectedTube === "balance" ? " sel-tube" : "")}
+                  tabIndex={balancePlaced || cfDone ? -1 : 0} role="button"
+                  aria-label={"Water balance tube" + (balancePlaced ? ", placed" : "") + (selectedTube === "balance" ? ", selected" : "")}
                   draggable={!balancePlaced && !cfDone} onDragStart={e => startDrag("cftube", "balance", e)}
-                  onTouchStart={!balancePlaced && !cfDone ? e => startTouch("cftube", "balance", e) : undefined}>
-                  <div className="cft-icon" style={{background: "#64748b"}}><div className="cft-icon-cap"/></div>
+                  onTouchStart={!balancePlaced && !cfDone ? e => startTouch("cftube", "balance", e) : undefined}
+                  onClick={() => handleTubeSelect("balance")}
+                  onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleTubeSelect("balance"); } }}>
+                  <div className="cft-icon" style={{background: "#64748b"}} aria-hidden="true"><div className="cft-icon-cap"/></div>
                   <span className="cft-label">Water Balance</span>
                 </div>
               </div>
             </div>
 
-            {cfError && <div className="cf-msg warn">{"\u26A0"} {cfError}</div>}
-            {cfDone && <div className="cf-msg ok">{"\u2713"} Centrifugation complete. Plasma separated. Nucleic acids extracted and purified.</div>}
+            {cfError && <div className="cf-msg warn" role="alert">{"\u26A0"} {cfError}</div>}
+            {cfDone && <div className="cf-msg ok" role="status">{"\u2713"} Centrifugation complete. Plasma separated. Nucleic acids extracted and purified.</div>}
 
-            {cfDone && <div className="cf-layers">
+            {cfDone && <div className="cf-layers" aria-label="Separated blood layers">
               <div className="cf-layer" style={{background:"#fef3c7",color:"#92400e",borderRadius:"4px 4px 0 0"}}>Plasma (nucleic acids)</div>
               <div className="cf-layer" style={{background:"#e2e8f0",color:"#475569",height:12,fontSize:".6rem"}}>Buffy coat</div>
               <div className="cf-layer" style={{background:"#991b1b",color:"#fecaca",borderRadius:"0 0 4px 4px"}}>Red blood cells</div>
@@ -462,31 +538,25 @@ function App() {
           </div>
 
           <div className="br">
-            <button className="btn bo" onClick={() => { setStep(0); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfError(""); }}>{"\u2190"} Back</button>
+            <button className="btn bo" onClick={() => { setStep(0); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfError(""); setSelectedTube(null); }}>{"\u2190"} Back</button>
             {!cfDone ? <button className="btn bp" disabled={cfSpinning} onClick={doSpin}>{cfSpinning ? "Spinning\u2026" : "\uD83C\uDF00 Spin Centrifuge"}</button>
             : <button className="btn bp" onClick={() => setStep(2)}>Continue {"\u2192"}</button>}
           </div>
-        </div>}
+        </section>}
 
         {/* STEP 2: DENATURE */}
-        {step === 2 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83C\uDF21"}</span><div className="tx"><b>Step 3: Denature the Sample</b><br/>Heat the extracted nucleic acids to <b>~95&deg;C</b> to break hydrogen bonds and separate double-stranded DNA into single strands for hybridization.</div></div>
-          <div className="den-wrap">
-            <div className={"den-temp " + (denaturing || denatured ? "hot" : "cool")}>{denaturing || denatured ? "95\u00B0C" : "25\u00B0C"}</div>
-            <div className="den-visual">
+        {step === 2 && pat && <section className="fade" aria-labelledby="step2-heading">
+          <div className="info"><span className="ic" aria-hidden="true">{"\uD83C\uDF21"}</span><div className="tx"><h2 id="step2-heading" style={{fontSize:"inherit",fontWeight:700,color:"var(--text-primary)",display:"inline"}}>Step 3: Denature the Sample</h2><br/>Heat the extracted nucleic acids to <b>~95&deg;C</b> to break hydrogen bonds and separate double-stranded DNA into single strands for hybridization.</div></div>
+          <div className="den-wrap" aria-label="Denaturation visualization">
+            <div className={"den-temp " + (denaturing || denatured ? "hot" : "cool")} aria-live="polite">{denaturing || denatured ? "95\u00B0C" : "25\u00B0C"}</div>
+            <div className="den-visual" aria-hidden="true">
               <div className={"den-helix" + (denatured ? " separated" : "")}>
-                <div className="den-strand-l">
-                  {"ATGCGA".split("").map((b, i) => <div key={i} className="den-bp" style={{color:{A:"#60a5fa",T:"#f87171",G:"#4ade80",C:"#fbbf24"}[b]}}>{b}</div>)}
-                </div>
-                <div style={{display:"flex",flexDirection:"column",gap:2}}>
-                  {"......".split("").map((_, i) => <div key={i} className="den-bond">{denatured ? "" : "\u2500"}</div>)}
-                </div>
-                <div className="den-strand-r">
-                  {"TACGCT".split("").map((b, i) => <div key={i} className="den-bp" style={{color:{A:"#60a5fa",T:"#f87171",G:"#4ade80",C:"#fbbf24"}[b]}}>{b}</div>)}
-                </div>
+                <div className="den-strand-l">{"ATGCGA".split("").map((b, i) => <div key={i} className="den-bp" style={{color:{A:"var(--base-a)",T:"var(--base-t)",G:"var(--base-g)",C:"var(--base-c)"}[b]}}>{b}</div>)}</div>
+                <div style={{display:"flex",flexDirection:"column",gap:2}}>{"......".split("").map((_, i) => <div key={i} className="den-bond">{denatured ? "" : "\u2500"}</div>)}</div>
+                <div className="den-strand-r">{"TACGCT".split("").map((b, i) => <div key={i} className="den-bp" style={{color:{A:"var(--base-a)",T:"var(--base-t)",G:"var(--base-g)",C:"var(--base-c)"}[b]}}>{b}</div>)}</div>
               </div>
             </div>
-            <div className="den-caption">
+            <div className="den-caption" role="status">
               {!denaturing && !denatured && "The extracted nucleic acids are double-stranded. Hydrogen bonds hold the complementary strands together. Click Heat to denature."}
               {denaturing && "Heating to 95\u00B0C\u2026 hydrogen bonds are breaking\u2026"}
               {denatured && !denaturing && "Denaturation complete. The nucleic acids are now single-stranded and ready to be labeled and hybridized with your probes."}
@@ -495,126 +565,143 @@ function App() {
           <div className="br">
             <button className="btn bo" onClick={() => { setStep(1); setDenatured(false); setDenaturing(false); }}>{"\u2190"} Back</button>
             {!denatured ? <button className="btn bp" style={{background:"#c2410c"}} disabled={denaturing} onClick={() => {
-              setDenaturing(true);
-              setTimeout(() => { setDenatured(true); setDenaturing(false); }, 1800);
+              setDenaturing(true); announce("Heating sample to 95 degrees.");
+              setTimeout(() => { setDenatured(true); setDenaturing(false); announce("Denaturation complete. Strands separated."); }, 1800);
             }}>{denaturing ? "Heating\u2026" : "\uD83C\uDF21 Heat to 95\u00B0C"}</button>
             : <button className="btn bp" onClick={() => setStep(3)}>Continue {"\u2192"}</button>}
           </div>
-        </div>}
+        </section>}
 
         {/* STEP 3: LABEL */}
-        {step === 3 && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83D\uDCA1"}</span><div className="tx"><b>Step 4: Attach Fluorescent Labels</b><br/>Click each strand (or drag the marker) to label it. Labels let you detect binding.</div></div>
+        {step === 3 && pat && <section className="fade" aria-labelledby="step3-heading">
+          <div className="info"><span className="ic" aria-hidden="true">{"\uD83D\uDCA1"}</span><div className="tx"><h2 id="step3-heading" style={{fontSize:"inherit",fontWeight:700,color:"var(--text-primary)",display:"inline"}}>Step 4: Attach Fluorescent Labels</h2><br/>Click each strand to label it. Labels let you detect binding.</div></div>
           <div style={{ textAlign: "center" }}>
-            <div className="fs" draggable onDragStart={e => startDrag("fluor", "f", e)} onTouchStart={e => startTouch("fluor", "f", e)}>
-              <span className="fd"/> Fluorescent Marker
+            <div className="fs" draggable onDragStart={e => startDrag("fluor", "f", e)} onTouchStart={e => startTouch("fluor", "f", e)} aria-label="Fluorescent marker, drag to strands or click strands to label">
+              <span className="fd" aria-hidden="true"/> Fluorescent Marker
             </div>
           </div>
-          <div className="st">{strandOrder.map(i => {
+          <div className="st" role="list" aria-label="Patient DNA/RNA strands">{strandOrder.map(i => {
             const s = pat.strands[i]; const isL = labeled.has(s.id);
-            return <div key={s.id} data-strand-id={s.id} className={"sc" + (isL ? " lab" : "")}
-              onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "fluor", () => setLabeled(p => new Set([...p, s.id])))}
-              onClick={() => { if (!isL) setLabeled(p => new Set([...p, s.id])); }}>
-              <span className="sn">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size="var(--seq-strand-list)"/></div>
-              <div className={"ldz" + (isL ? " on" : "") + (dragType === "fluor" ? " act" : "")}>{isL && <span style={{ fontSize: ".5rem", color: "#fff" }}>{"\u2726"}</span>}</div>
+            return <div key={s.id} data-strand-id={s.id} role="listitem" tabIndex={0}
+              className={"sc" + (isL ? " lab" : "")}
+              aria-label={"Strand " + (i+1) + ", sequence " + s.seq + (isL ? ", labeled" : ", not labeled. Click to label.")}
+              onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "fluor", () => { setLabeled(p => new Set([...p, s.id])); announce("Strand " + (i+1) + " labeled."); })}
+              onClick={() => { if (!isL) { setLabeled(p => new Set([...p, s.id])); announce("Strand " + (i+1) + " labeled."); } }}
+              onKeyDown={e => { if ((e.key === "Enter" || e.key === " ") && !isL) { e.preventDefault(); setLabeled(p => new Set([...p, s.id])); announce("Strand " + (i+1) + " labeled."); } }}>
+              <span className="sn" aria-hidden="true">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size="var(--seq-strand-list)"/></div>
+              <div className={"ldz" + (isL ? " on" : "") + (dragType === "fluor" ? " act" : "")} aria-hidden="true">{isL && <span style={{ fontSize: ".5rem", color: "#fff" }}>{"\u2726"}</span>}</div>
             </div>;
           })}</div>
           <div className="br"><button className="btn bo" onClick={() => setStep(2)}>{"\u2190"} Back</button>
             <button className="btn bp" disabled={!allLabeled} onClick={() => setStep(4)}>{allLabeled ? "Base-Pair \u2192" : "Label " + (pat.strands.length - labeled.size) + " more"}</button></div>
-        </div>}
+        </section>}
 
         {/* STEP 4: BASE-PAIR */}
-        {step === 4 && pat && !washed && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83E\uDDEC"}</span><div className="tx"><b>Step 5: Base-Pair Strands to Probes</b><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>. Not every strand matches a probe {"\u2014"} leave non-matching strands in the tray. Note: In the real world, hybridization is spontaneous!</div></div>
-          <div className="bpr">
+        {step === 4 && pat && !washed && <section className="fade" aria-labelledby="step4-heading">
+          <div className="info"><span className="ic" aria-hidden="true">{"\uD83E\uDDEC"}</span><div className="tx"><h2 id="step4-heading" style={{fontSize:"inherit",fontWeight:700,color:"var(--text-primary)",display:"inline"}}>Step 5: Base-Pair Strands to Probes</h2><br/>Read each sequence. <b>Drag patient strands to the well with the complementary probe</b>, or click a strand to select it then click a well to place it. Not every strand matches a probe {"\u2014"} leave non-matching strands in the tray. Note: In the real world, hybridization is spontaneous!</div></div>
+          <div className="bpr" aria-label="Base pairing rules">
             <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bT">T</span></div>
             <div className="bpc"><span className="b bA">A</span>{"\u27F7"}<span className="b bU">U</span></div>
             <div className="bpc"><span className="b bG">G</span>{"\u27F7"}<span className="b bC">C</span></div>
           </div>
+          {selectedStrand && <p className="kb-hint" role="status">Strand selected. Click a well to place it, or click the strand again to deselect.</p>}
           <div className="hl">
             <div className="hlf">
               <div className="pw">
-                <div className="pl">
+                <div className="pl" role="grid" aria-label="Probe platform">
                   {WELL_LAYOUT.map((probeId, idx) => {
                     const pr = getProbe(probeId);
                     const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
-                    return <div key={idx} data-well-drop={idx} className={"wl fl" + (strand ? " has-strand" : "") + (dragType === "strand" && !strand && probeId !== "NC" ? " dt" : "")}
+                    return <div key={idx} data-well-drop={idx} tabIndex={0} role="gridcell"
+                      aria-label={pr.label + ", sequence " + pr.seq + (strand ? ", contains patient strand " + strand.seq : ", empty") + (selectedStrand && !strand && probeId !== "NC" ? ". Press Enter to place selected strand." : "")}
+                      className={"wl fl" + (strand ? " has-strand" : "") + ((dragType === "strand" || selectedStrand) && !strand && probeId !== "NC" ? " dt" : "")}
                       onDragOver={e => e.preventDefault()} onDrop={e => onGenericDrop(e, "strand", sid => {
                         setWellStrands(prev => { const n = Object.assign({}, prev); Object.keys(n).forEach(k => { if (n[k] === sid) delete n[k]; }); n[idx] = sid; return n; });
-                      })}>
+                        announce("Strand placed on " + pr.label);
+                      })}
+                      onClick={() => handleWellClick(idx)}
+                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleWellClick(idx); } }}>
                       <span className="wid">{pr.label}</span>
                       <div className="wseq"><Seq seq={pr.seq} size="var(--seq-well)"/></div>
                       {strand ? <>
                         <div className="wsm"><Seq seq={strand.seq} size="var(--seq-strand-well)"/></div>
-                        <div className="fdw"/><button className="rmb" onClick={e => { e.stopPropagation(); setWellStrands(prev => { const n = Object.assign({}, prev); delete n[idx]; return n; }); }}>{"\u2715"}</button>
-                      </> : probeId !== "NC" && <span style={{ fontSize: ".38rem", color: "#334155", marginTop: 2 }}>drop strand</span>}
+                        <div className="fdw" aria-hidden="true"/>
+                        <button className="rmb" aria-label={"Remove strand from " + pr.label} onClick={e => { e.stopPropagation(); setWellStrands(prev => { const n = Object.assign({}, prev); delete n[idx]; return n; }); announce("Strand removed from " + pr.label); }}>{"\u2715"}</button>
+                      </> : probeId !== "NC" && <span style={{ fontSize: ".38rem", color: "var(--border-secondary)", marginTop: 2 }} aria-hidden="true">drop strand</span>}
                     </div>;
                   })}
-                  {washing && <div className="washov"/>}
+                  {washing && <div className="washov" aria-hidden="true"/>}
                 </div>
               </div>
             </div>
             <div className="hlr">
-              <h4>{"\uD83E\uDDEA"} Patient Strands</h4>
-              <div className="ut">{strandOrder.map(i => {
+              <h3 id="strand-tray-label">{"\uD83E\uDDEA"} Patient Strands</h3>
+              <p className="kb-hint">Click a strand to select it, then click a well.</p>
+              <div className="ut" role="list" aria-labelledby="strand-tray-label">{strandOrder.map(i => {
                 const s = pat.strands[i]; const isP = placedStrandIds.has(s.id);
-                return <div key={s.id} className={"us" + (isP ? " placed" : "")}
+                return <div key={s.id} role="listitem" tabIndex={isP ? -1 : 0}
+                  className={"us" + (isP ? " placed" : "") + (selectedStrand === s.id ? " sel-strand" : "")}
+                  aria-label={"Strand " + (i+1) + ", sequence " + s.seq + (isP ? ", placed on platform" : "") + (selectedStrand === s.id ? ", selected" : ". Click to select.")}
                   draggable={!isP} onDragStart={e => startDrag("strand", s.id, e)}
-                  onTouchStart={!isP ? e => startTouch("strand", s.id, e) : undefined}>
-                  <span className="fds"/><span className="usn">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size="var(--seq-strand-side)"/></div>
+                  onTouchStart={!isP ? e => startTouch("strand", s.id, e) : undefined}
+                  onClick={() => { if (!isP) handleStrandSelect(s.id); }}
+                  onKeyDown={e => { if ((e.key === "Enter" || e.key === " ") && !isP) { e.preventDefault(); handleStrandSelect(s.id); } }}>
+                  <span className="fds" aria-hidden="true"/><span className="usn" aria-hidden="true">#{i + 1}</span><div className="ss"><Seq seq={s.seq} size="var(--seq-strand-side)"/></div>
                 </div>;
               })}</div>
             </div>
           </div>
           <div className="br">
-            <button className="btn bo" onClick={() => { setStep(3); setWellStrands({}); }}>{"\u2190"} Back</button>
+            <button className="btn bo" onClick={() => { setStep(3); setWellStrands({}); setSelectedStrand(null); }}>{"\u2190"} Back</button>
             <button className="btn bg" onClick={doWash} disabled={Object.keys(wellStrands).length === 0 || washing}>{washing ? "Washing..." : "\uD83E\uDDEB Wash Platform"}</button>
           </div>
-        </div>}
+        </section>}
 
         {/* RESULTS */}
-        {step === 4 && washed && pat && <div className="fade">
-          <div className="info"><span className="ic">{"\uD83D\uDD0E"}</span><div className="tx"><b>Step 6: Read Results</b><br/>Wells with correctly base-paired strands <b style={{ color: "#22c55e" }}>glow green</b>. Mismatched strands were washed away.</div></div>
+        {step === 4 && washed && pat && <section className="fade" aria-labelledby="step5-heading">
+          <div className="info"><span className="ic" aria-hidden="true">{"\uD83D\uDD0E"}</span><div className="tx"><h2 id="step5-heading" style={{fontSize:"inherit",fontWeight:700,color:"var(--text-primary)",display:"inline"}}>Step 6: Read Results</h2><br/>Wells with correctly base-paired strands <b style={{ color: "var(--accent-green)" }}>glow green</b>. Mismatched strands were washed away.</div></div>
           <div className="pw">
-            <div className="pl">
+            <div className="pl" role="grid" aria-label="Results platform">
               {WELL_LAYOUT.map((probeId, idx) => {
                 const pr = getProbe(probeId);
                 const res = washResults ? washResults[idx] : null; const glows = res === "correct";
                 const sid = wellStrands[idx]; const strand = sid ? pat.strands.find(s => s.id === sid) : null;
-                return <div key={idx} className={"wl fl" + (glows ? " glow" : "") + (res === "wrong" ? " wrong" : "") + (!res ? " dim" : "")}>
+                return <div key={idx} role="gridcell" tabIndex={0}
+                  aria-label={pr.label + (probeId === "NC" ? ", negative control" : ", " + pr.pathogen) + ": " + (glows ? "POSITIVE, strand bound" : res === "wrong" ? "strand washed away, incorrect match" : "no strand placed")}
+                  className={"wl fl" + (glows ? " glow" : "") + (res === "wrong" ? " wrong" : "") + (!res ? " dim" : "")}>
                   <span className="wid">{pr.label}</span>
                   <div className="wseq"><Seq seq={pr.seq} size="var(--seq-well)"/></div>
                   {glows && strand && <div className="wsm"><Seq seq={strand.seq} size="var(--seq-strand-well)"/></div>}
-                  {glows && <div className="fdw"/>}
-                  {glows && <span className="bnd" style={{ color: "#22c55e" }}>{"\u2726"} BOUND</span>}
-                  {res === "wrong" && <span className="bnd" style={{ color: "#f87171" }}>{"\u2717"} WASHED</span>}
+                  {glows && <div className="fdw" aria-hidden="true"/>}
+                  {glows && <span className="bnd" style={{ color: "var(--accent-green)" }}>{"\u2726"} BOUND</span>}
+                  {res === "wrong" && <span className="bnd" style={{ color: "var(--accent-red)" }}>{"\u2717"} WASHED</span>}
                 </div>;
               })}
             </div>
           </div>
 
-          <div style={{ textAlign: "center", margin: "12px 0 4px", fontSize: ".82rem" }}>
-            <span style={{ color: "#22c55e", fontWeight: 700 }}>{correctCount} correct</span>
-            {wrongCount > 0 && <span style={{ color: "#f87171", fontWeight: 700 }}> {"\u00B7"} {wrongCount} washed away</span>}
+          <div style={{ textAlign: "center", margin: "12px 0 4px", fontSize: ".82rem" }} role="status">
+            <span style={{ color: "var(--accent-green)", fontWeight: 700 }}>{correctCount} correct</span>
+            {wrongCount > 0 && <span style={{ color: "var(--accent-red)", fontWeight: 700 }}> {"\u00B7"} {wrongCount} washed away</span>}
             {missed.length > 0 && <span style={{ color: "#fbbf24", fontWeight: 700 }}> {"\u00B7"} {missed.length} missed</span>}
           </div>
-          {wrongCount > 0 && <div className="mbox">{"\u26A0"} {wrongCount} strand{wrongCount > 1 ? "s" : ""} not complementary {"\u2014"} washed off.</div>}
-          {missed.length > 0 && <div className="mbox">{"\u26A0"} {missed.length} matching strand{missed.length > 1 ? "s" : ""} left unplaced or on wrong well.</div>}
+          {wrongCount > 0 && <div className="mbox" role="alert">{"\u26A0"} {wrongCount} strand{wrongCount > 1 ? "s" : ""} not complementary {"\u2014"} washed off.</div>}
+          {missed.length > 0 && <div className="mbox" role="alert">{"\u26A0"} {missed.length} matching strand{missed.length > 1 ? "s" : ""} left unplaced or on wrong well.</div>}
 
-          <h3 style={{ textAlign: "center", margin: "16px 0 4px", color: "#22d3ee", fontSize: ".88rem", fontWeight: 700 }}>{"\uD83D\uDD11"} Probe Key</h3>
-          <table className="kt"><thead><tr><th>Probe</th><th>Target Microorganism</th></tr></thead><tbody>
+          <h3 style={{ textAlign: "center", margin: "16px 0 4px", color: "var(--accent-cyan)", fontSize: ".88rem", fontWeight: 700 }}>{"\uD83D\uDD11"} Probe Key</h3>
+          <table className="kt" aria-label="Probe identification key"><thead><tr><th scope="col">Probe</th><th scope="col">Target Microorganism</th></tr></thead><tbody>
             {PROBES.filter(p => p.id !== "NC").map(p => <tr key={p.id}><td style={{ fontWeight: 600 }}>{p.label}</td><td>{p.pathogen}</td></tr>)}
           </tbody></table>
 
           <div className="br">
-            <button className="btn bo" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide Answer" : "\uD83D\uDD13 Check Answer"}</button>
-            <button className="btn bp" onClick={() => { setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); }}>{"\uD83D\uDD04"} Try Again</button>
+            <button className="btn bo" onClick={() => setShowKey(!showKey)} aria-expanded={showKey}>{showKey ? "Hide Answer" : "\uD83D\uDD13 Check Answer"}</button>
+            <button className="btn bp" onClick={() => { setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setSelectedStrand(null); announce("Reset for retry."); }}>{"\uD83D\uDD04"} Try Again</button>
           </div>
-          {showKey && <div className="dbox fade"><h3>Patient {patient} {"\u2014"} Diagnosis</h3><ul>{pat.answer.map((a, i) => <li key={i}><span style={{ color: "#22c55e" }}>{"\u2726"}</span> {a}</li>)}</ul></div>}
+          {showKey && <div className="dbox fade" role="region" aria-label="Answer key"><h3>Patient {patient} {"\u2014"} Diagnosis</h3><ul>{pat.answer.map((a, i) => <li key={i}><span style={{ color: "var(--accent-green)" }} aria-hidden="true">{"\u2726"}</span> {a}</li>)}</ul></div>}
           <div className="br"><button className="rl" onClick={resetAll}>{"\u21BB"} Start Over</button></div>
-        </div>}
+        </section>}
 
-      </div>
+      </main>
     </div>
   );
 }
