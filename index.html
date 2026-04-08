@@ -145,8 +145,11 @@ button:focus-visible,div[tabindex="0"]:focus-visible,div[role="button"]:focus-vi
 .cf-rotor-wrap{position:relative;width:240px;height:240px}
 .cf-rotor{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle,var(--bg-tertiary) 60%,var(--bg-secondary) 100%);border:3px solid var(--border-secondary);transition:border-color .3s}
 .cf-rotor.spinning{animation:cfSpin .3s linear infinite;border-color:var(--accent-cyan)}
+.cf-rotor.flyoff{animation:cfSpin .15s linear infinite;border-color:var(--accent-red)}
 .cf-rotor.done{border-color:var(--accent-green)}
 @keyframes cfSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.cf-rotor-wrap.flyoff-anim{transition:transform 1s cubic-bezier(.2,.8,.3,1),opacity .9s ease-out;pointer-events:none}
+.cf-rotor-wrap.flyoff-anim.go{opacity:0}
 .cf-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:var(--bg-card);border:2px solid #475569;z-index:2}
 .cf-slot{position:absolute;width:48px;height:48px;border-radius:10px;background:var(--bg-card);border:2px dashed var(--border-secondary);display:flex;align-items:center;justify-content:center;transition:all .3s;cursor:pointer;min-width:48px;min-height:48px}
 .cf-slot.highlight{border-color:var(--border-active);background:#0c2d3e;box-shadow:0 0 12px rgba(34,211,238,.2)}
@@ -220,6 +223,9 @@ const PATIENTS = {
   Purple: { color: "#A855F7", strands: [
     { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },{ id: "s2", seq: "CGAATTGGCCTA", bindsTo: "P2" },{ id: "s3", seq: "GGUUCCAAAGGU", bindsTo: "P3" },{ id: "s4", seq: "UUGGAACCUUGG", bindsTo: "P5" },{ id: "s5", seq: "TTAGCAATCGGT", bindsTo: null },{ id: "s6", seq: "CCGATTAGCAAT", bindsTo: null },{ id: "s7", seq: "AATTCCGGATTA", bindsTo: null },
   ], answer: ["Human DNA (Positive Control)", "Hepatitis B Virus", "West Nile Virus", "Hepatitis C Virus"] },
+  Red: { color: "#EF4444", strands: [
+    { id: "s1", seq: "TACGCTAGGATC", bindsTo: "P1" },{ id: "s2", seq: "TTAGCAATCGGT", bindsTo: null },{ id: "s3", seq: "GCAATCGGTACC", bindsTo: null },{ id: "s4", seq: "CCGATTAGCAAT", bindsTo: null },{ id: "s5", seq: "AATTCCGGATTA", bindsTo: null },{ id: "s6", seq: "TTCGAACCGATT", bindsTo: null },{ id: "s7", seq: "GCAATTAGCCGA", bindsTo: null },
+  ], answer: ["Human DNA (Positive Control)"] },
 };
 
 const STEPS = ["Select Patient", "Extract DNA/RNA", "Denature", "Label", "Base-Pair", "Wash & Results"];
@@ -255,6 +261,8 @@ function App() {
   const [cfSpinning, setCfSpinning] = useState(false);
   const [cfDone, setCfDone] = useState(false);
   const [cfError, setCfError] = useState("");
+  const [cfFlyOff, setCfFlyOff] = useState(false);
+  const [cfFlyDir, setCfFlyDir] = useState({x:0,y:0});
   const [selectedTube, setSelectedTube] = useState(null); // keyboard: which tube is selected
   // Denature
   const [denatured, setDenatured] = useState(false);
@@ -291,7 +299,7 @@ function App() {
 
   const resetAll = () => {
     setStep(0); setPatient(null);
-    setCfSlots(Array(SLOT_COUNT).fill(null)); setCfSpinning(false); setCfDone(false); setCfError(""); setSelectedTube(null);
+    setCfSlots(Array(SLOT_COUNT).fill(null)); setCfSpinning(false); setCfDone(false); setCfError(""); setCfFlyOff(false); setCfFlyDir({x:0,y:0}); setSelectedTube(null);
     setDenatured(false); setDenaturing(false);
     setLabeled(new Set()); setStrandOrder([]); setWellStrands({}); setSelectedStrand(null);
     setWashed(false); setWashing(false); setWashResults(null); setShowKey(false);
@@ -407,7 +415,25 @@ function App() {
   };
   const doSpin = () => {
     if (!samplePlaced || !balancePlaced) { setCfError("Place both tubes before spinning."); announce("Error: place both tubes before spinning."); return; }
-    if (!isBalanced()) { setCfError("The centrifuge is unbalanced! The tubes must be in opposite slots."); announce("Error: centrifuge is unbalanced. Tubes must be in opposite slots."); return; }
+    if (!isBalanced()) {
+      // Brief violent spin, then fly off screen
+      setCfError(""); setCfSpinning(true); announce("Centrifuge is unbalanced!");
+      setTimeout(() => {
+        setCfSpinning(false);
+        // Random direction
+        const angle = Math.random() * 2 * Math.PI;
+        const dist = 1500;
+        setCfFlyDir({ x: Math.cos(angle) * dist, y: Math.sin(angle) * dist });
+        setCfFlyOff(true);
+        announce("The centrifuge flew off the table! It was not balanced. Try again.");
+        setTimeout(() => {
+          setCfError("The centrifuge was unbalanced and flew off the bench! Place the tubes in opposite slots.");
+          setCfSlots(Array(SLOT_COUNT).fill(null));
+          setCfFlyOff(false); setCfFlyDir({x:0,y:0}); setSelectedTube(null);
+        }, 1200);
+      }, 800);
+      return;
+    }
     setCfError(""); setCfSpinning(true); announce("Centrifuge spinning.");
     setTimeout(() => { setCfSpinning(false); setCfDone(true); announce("Centrifugation complete. Nucleic acids extracted."); }, 3000);
   };
@@ -467,7 +493,7 @@ function App() {
           <div className="pr" role="radiogroup" aria-label="Patient samples">{Object.entries(PATIENTS).map(([n, d]) =>
             <button key={n} className={"pb" + (patient === n ? " sel" : "")} role="radio" aria-checked={patient === n}
               style={{ borderColor: patient === n ? d.color : undefined, color: d.color, boxShadow: patient === n ? "0 0 16px " + d.color + "33" : undefined }}
-              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setDenatured(false); setDenaturing(false); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfSpinning(false); setCfError(""); setSelectedTube(null); setSelectedStrand(null); announce("Selected " + n + " patient sample."); }}>
+              onClick={() => { setPatient(n); setLabeled(new Set()); setWellStrands({}); setWashed(false); setWashResults(null); setShowKey(false); setDenatured(false); setDenaturing(false); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfSpinning(false); setCfError(""); setCfFlyOff(false); setCfFlyDir({x:0,y:0}); setSelectedTube(null); setSelectedStrand(null); announce("Selected " + n + " patient sample."); }}>
               {"\uD83E\uDDEA"} {n}
             </button>)}
           </div>
@@ -481,8 +507,8 @@ function App() {
           <div className="cf-wrap">
             <p className="kb-hint">Click a tube to select it, then click a slot to place it. Click a filled slot to remove its tube.</p>
             <div className="cf-area">
-              <div className="cf-rotor-wrap" style={{width:cfSize,height:cfSize}} role="group" aria-label="Centrifuge rotor with 6 slots">
-                <div className={"cf-rotor" + (cfSpinning ? " spinning" : "") + (cfDone ? " done" : "")} aria-label={cfSpinning ? "Centrifuge spinning" : cfDone ? "Centrifuge complete" : "Centrifuge idle"}>
+              <div className={"cf-rotor-wrap" + (cfFlyOff ? " flyoff-anim go" : "")} style={{width:cfSize,height:cfSize,transform:cfFlyOff ? "translate("+cfFlyDir.x+"px,"+cfFlyDir.y+"px) rotate(720deg) scale(0.3)" : "none"}} role="group" aria-label="Centrifuge rotor with 6 slots">
+                <div className={"cf-rotor" + (cfSpinning && !cfFlyOff ? " spinning" : "") + (cfFlyOff ? " flyoff" : "") + (cfDone ? " done" : "")} aria-label={cfFlyOff ? "Centrifuge flew off, unbalanced" : cfSpinning ? "Centrifuge spinning" : cfDone ? "Centrifuge complete" : "Centrifuge idle"}>
                   <div className="cf-center" aria-hidden="true"/>
                   {Array(SLOT_COUNT).fill(null).map((_, i) => {
                     const pos = getSlotPos(i, cfSize); const content = cfSlots[i];
@@ -538,8 +564,8 @@ function App() {
           </div>
 
           <div className="br">
-            <button className="btn bo" onClick={() => { setStep(0); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfError(""); setSelectedTube(null); }}>{"\u2190"} Back</button>
-            {!cfDone ? <button className="btn bp" disabled={cfSpinning} onClick={doSpin}>{cfSpinning ? "Spinning\u2026" : "\uD83C\uDF00 Spin Centrifuge"}</button>
+            <button className="btn bo" onClick={() => { setStep(0); setCfSlots(Array(SLOT_COUNT).fill(null)); setCfDone(false); setCfError(""); setCfFlyOff(false); setCfFlyDir({x:0,y:0}); setSelectedTube(null); }}>{"\u2190"} Back</button>
+            {!cfDone ? <button className="btn bp" disabled={cfSpinning || cfFlyOff} onClick={doSpin}>{cfSpinning ? "Spinning\u2026" : cfFlyOff ? "Retrieving\u2026" : "\uD83C\uDF00 Spin Centrifuge"}</button>
             : <button className="btn bp" onClick={() => setStep(2)}>Continue {"\u2192"}</button>}
           </div>
         </section>}
